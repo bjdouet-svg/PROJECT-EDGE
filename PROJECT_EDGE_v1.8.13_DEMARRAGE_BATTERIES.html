@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#080d14">
+<title>PROJECT EDGE · V1.8.11 CONTENU ADAPTATIF</title>
+<style>
+:root{--bg:#05090f;--panel:#0b1522;--panel2:#102238;--line:#1b3b55;--blue:#19baff;--cyan:#7beaff;--orange:#ff7a32;--gold:#ffbd72;--text:#eff8ff;--muted:#7892a8;--green:#56f0b0;--red:#ff536c}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#05090f;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;overflow:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(rgba(25,186,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(25,186,255,.04) 1px,transparent 1px);background-size:34px 34px;mask-image:linear-gradient(to bottom,#000,transparent 90%);opacity:.55}
+body:after{content:"";position:fixed;inset:-40%;pointer-events:none;background:conic-gradient(from 0deg,transparent 0 78%,rgba(25,186,255,.045) 82%,transparent 88%);animation:radar 28s linear infinite}
+@keyframes radar{to{transform:rotate(360deg)}}@keyframes pulse{0%,100%{opacity:.65;box-shadow:0 0 5px var(--blue)}50%{opacity:1;box-shadow:0 0 18px var(--blue)}}@keyframes scan{0%{transform:translateY(-120%)}100%{transform:translateY(300%)}}
+button{font:inherit;color:inherit;border:1px solid #24516d;background:linear-gradient(135deg,#10283c,#09131f);clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));padding:11px 14px;cursor:pointer;transition:.18s}
+button:hover{border-color:var(--cyan);filter:brightness(1.25);box-shadow:0 0 18px #19baff24}button:active{transform:scale(.97)}
+.app{height:100dvh;display:flex;flex-direction:column;max-width:1600px;margin:auto;padding:clamp(9px,1.7vw,20px);gap:11px;position:relative;z-index:1}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:46px;border-bottom:1px solid #18334a;padding-bottom:9px}
+.brand{display:flex;align-items:center;gap:10px;letter-spacing:.19em;font-weight:900;font-size:clamp(14px,2vw,19px);text-shadow:0 0 16px #19baff55}
+.logo{width:36px;height:36px;display:grid;place-items:center;color:#06111b;font-weight:1000;font-style:italic;background:linear-gradient(135deg,var(--cyan),var(--blue) 58%,var(--orange));clip-path:polygon(18% 0,100% 0,82% 100%,0 100%);box-shadow:0 0 22px #19baff55}
+.status{font-size:10px;color:var(--green);letter-spacing:.15em;white-space:nowrap}.status:before{content:"";display:inline-block;width:7px;height:7px;background:var(--green);border-radius:50%;margin-right:8px;animation:pulse 1.7s infinite}
+.clock{font-variant-numeric:tabular-nums;color:var(--cyan);font-size:clamp(12px,1.5vw,15px);letter-spacing:.1em}
+.nav{display:flex;gap:7px;overflow:auto;scrollbar-width:none}.nav button{white-space:nowrap;font-size:11px;letter-spacing:.1em;color:#83a1b8;padding:9px 14px;border-color:#1c3b53}.nav button.active{color:#fff;border-color:var(--blue);background:linear-gradient(110deg,#123e5c,#0d1d2c);box-shadow:inset 0 -2px var(--orange),0 0 18px #19baff20}
+main{flex:1;min-height:0;overflow:auto;scrollbar-width:thin;scrollbar-color:#24516d transparent}
+.page{display:none;animation:pagein .28s ease}.page.active{display:block}@keyframes pagein{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+.heading{display:flex;justify-content:space-between;align-items:end;margin:5px 0 14px;gap:10px;position:relative}.heading:after{content:"";position:absolute;bottom:-7px;left:0;width:clamp(100px,22vw,260px);height:2px;background:linear-gradient(90deg,var(--orange),var(--blue),transparent)}
+.eyebrow{font-size:10px;color:var(--orange);letter-spacing:.27em;font-weight:900}.heading h1{font-size:clamp(24px,4.4vw,39px);margin:3px 0 0;letter-spacing:.025em;text-transform:uppercase;text-shadow:0 0 24px #19baff35}.sub{font-size:10px;color:var(--muted);letter-spacing:.16em}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:34px;grid-auto-flow:dense;gap:10px;align-items:stretch}
+.card{background:linear-gradient(145deg,rgba(16,36,55,.96),rgba(7,16,26,.97));border:1px solid #1b405a;border-radius:3px;padding:14px;min-width:0;position:relative;overflow:hidden;box-shadow:0 8px 26px #0006,inset 0 1px #ffffff08}
+.card:before{content:"";position:absolute;top:0;left:0;width:42px;height:2px;background:var(--widget-accent,var(--orange));box-shadow:0 0 12px var(--widget-accent,var(--orange))}
+.card:after{content:"";position:absolute;right:-23px;top:-23px;width:55px;height:55px;border:1px solid #1c4966;transform:rotate(45deg);opacity:.7}
+.card.wide{grid-column:span 2}.card.full{grid-column:1/-1}.page .card{grid-row:span var(--widget-rows,3);min-height:0}
+.metric-label{font-size:10px;letter-spacing:.17em;color:#8ba8bd;text-transform:uppercase;font-weight:800}
+.metric{font-size:clamp(25px,4.2vw,39px);font-weight:850;margin:7px 0 2px;font-variant-numeric:tabular-nums;letter-spacing:-.04em;text-shadow:0 0 18px #19baff30}
+.unit{font-size:13px;color:var(--cyan);font-weight:700}.detail{font-size:10px;color:var(--muted);letter-spacing:.04em}
+.bar{height:6px;background:#1b3043;margin-top:12px;overflow:hidden;position:relative;clip-path:polygon(0 0,100% 0,98% 100%,0 100%)}
+.bar i{display:block;height:100%;width:var(--v,50%);background:linear-gradient(90deg,#087db8,var(--cyan),var(--orange));box-shadow:0 0 15px #19baff99;transition:width .7s ease}
+
+.gauge-wrap{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:8px}
+.gauge{--p:50;width:92px;height:92px;flex:0 0 92px;border-radius:50%;display:grid;place-items:center;position:relative;
+background:conic-gradient(from -90deg,#23d7ff 0%,#258dff 50%,#ff873b 100%);
+box-shadow:0 0 18px #19baff40;transition:filter .45s ease}
+.gauge:before{content:"";position:absolute;inset:7px;border-radius:50%;background:radial-gradient(circle at 35% 25%,#142a3d,#07111c 72%);border:1px solid #28445b;z-index:1}
+.gauge:after{content:"";position:absolute;inset:0;border-radius:50%;
+background:conic-gradient(from -90deg,transparent 0% calc(var(--p)*1%),#1b3043 calc(var(--p)*1%) 100%);
+z-index:0;mask:radial-gradient(farthest-side,transparent calc(100% - 12px),#000 calc(100% - 11px));
+-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 12px),#000 calc(100% - 11px))}
+
+.gauge-value{position:relative;z-index:2;font-size:24px;font-weight:900;letter-spacing:-.06em;text-shadow:0 0 15px color-mix(in srgb,var(--gauge-color) 65%,transparent);font-variant-numeric:tabular-nums}
+.gauge-value small{font-size:10px;color:var(--muted);letter-spacing:0;margin-left:1px}
+.gauge-side{min-width:0}.gauge-side .metric-label{font-size:9px}.gauge-side .detail{margin-top:6px;line-height:1.4}
+
+.panel-title{font-size:11px;letter-spacing:.19em;color:var(--gold);margin:0 0 12px;text-transform:uppercase;font-weight:900}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.quick button{min-height:70px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:7px;font-size:10px;letter-spacing:.08em;color:#dceafa}.quick b{font-size:21px;color:var(--cyan);text-shadow:0 0 14px #19baff99}
+.tilegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.tile{min-height:105px;text-align:left;display:flex;flex-direction:column;justify-content:space-between}.tile .ico{font-size:24px;color:var(--cyan);text-shadow:0 0 14px #19baff88}.tile strong{letter-spacing:.05em;text-transform:uppercase;font-size:11px}.tile small{color:var(--muted);font-size:10px}
+.list{display:grid;gap:8px}.rowitem{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #203b50;font-size:11px}.pill{font-size:9px;padding:5px 9px;border:1px solid #28688a;border-radius:2px;color:var(--cyan);letter-spacing:.12em}
+.footer{display:flex;justify-content:space-between;align-items:center;color:#627e94;font-size:9px;letter-spacing:.14em;padding-top:2px}.footer strong{color:var(--orange);font-weight:900}
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);opacity:0;background:#102b40;border:1px solid var(--cyan);border-left:3px solid var(--orange);padding:11px 16px;font-size:12px;transition:.25s;pointer-events:none;z-index:5}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:700px){.app{padding:9px;gap:8px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card{padding:11px}.card.wide{grid-column:span 2}.quick{gap:6px}.quick button{padding:8px 4px;min-height:62px;font-size:9px}.tilegrid{grid-template-columns:repeat(2,1fr)}.heading{margin-bottom:12px}.sub{display:none}}
+@media(max-height:480px) and (orientation:landscape){.app{padding:7px 13px;gap:6px}.top{min-height:33px}.logo{width:29px;height:29px}.nav button{padding:7px 10px}.heading{margin:0 0 9px}.heading h1{font-size:24px}.card{padding:9px}.metric{font-size:24px}.grid{gap:7px}.footer{font-size:8px}}
+
+.edit-mode-btn{padding:8px 10px;font-size:9px;letter-spacing:.1em;white-space:nowrap}
+.editor-toolbar{display:none;align-items:center;gap:7px;flex-wrap:wrap;padding:8px;border:1px solid #24516d;background:#091725;border-radius:3px}
+body.editing .editor-toolbar{display:flex}
+.editor-toolbar button{font-size:10px;padding:8px 10px}
+.editor-hint{font-size:9px;color:var(--gold);letter-spacing:.08em;margin-left:auto}
+body.editing .page .card{outline:1px dashed #2d83aa;outline-offset:2px;cursor:grab}
+body.editing .page .card.dragging{opacity:.35}
+body.editing .page .card.drag-over{outline:2px solid var(--orange);background:#172b3c}
+.widget-tools{display:none;position:absolute;z-index:4;top:7px;right:7px;gap:4px}
+body.editing .widget-tools{display:flex}
+.widget-tools button{padding:4px 7px;font-size:10px;background:#10283c}
+.page-tab-tools{display:none;gap:4px;margin-left:4px}
+body.editing .page-tab-tools{display:inline-flex}
+@media(max-width:700px){.edit-mode-btn{font-size:8px;padding:7px}.editor-hint{width:100%;margin-left:0}}
+
+
+.widget-size-1{grid-column:span 1!important}
+.widget-size-2{grid-column:span 2!important}
+.widget-size-4{grid-column:1/-1!important}
+body.editing .card{touch-action:pan-y}
+#widgetEditor{display:none;position:fixed;z-index:20;inset:0;background:#02070dcc;backdrop-filter:blur(7px);align-items:center;justify-content:center;padding:14px}
+#widgetEditor.open{display:flex}
+.editor-panel{width:min(440px,100%);max-height:90dvh;overflow:auto;background:linear-gradient(145deg,#10283c,#07111c);border:1px solid #28749a;box-shadow:0 20px 70px #000b,0 0 35px #19baff20;padding:18px}
+.editor-panel h2{font-size:17px;letter-spacing:.12em;margin:0 0 5px}
+.editor-panel .hint{font-size:10px;color:var(--muted);margin-bottom:17px}
+.editor-field{display:grid;gap:6px;margin:12px 0}
+.editor-field label{font-size:10px;color:var(--gold);letter-spacing:.12em}
+.editor-field input,.editor-field textarea,.editor-field select{width:100%;padding:11px;background:#06111c;color:#eff8ff;border:1px solid #28516b;border-radius:2px;font:inherit}
+.editor-field textarea{min-height:90px;resize:vertical}
+.editor-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;flex-wrap:wrap}
+.size-options{display:flex;gap:7px}.size-options button{flex:1;padding:9px 5px;font-size:10px}
+@media(max-width:700px){.editor-panel{padding:14px}.widget-size-2{grid-column:span 2!important}}
+
+
+#widgetLibrary{display:none;position:fixed;z-index:21;inset:0;background:#02070dcc;backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:14px}
+#widgetLibrary.open{display:flex}
+.library-panel{width:min(760px,100%);max-height:92dvh;overflow:auto;background:linear-gradient(145deg,#10283c,#07111c);border:1px solid #28749a;padding:18px;box-shadow:0 20px 70px #000b}
+.library-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:5px}
+.library-head h2{font-size:18px;letter-spacing:.13em;margin:0}
+.library-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
+.library-item{min-height:112px;text-align:left;display:flex;flex-direction:column;gap:7px;padding:13px}
+.library-item .lib-ico{font-size:24px;color:var(--cyan)}
+.library-item strong{font-size:11px;letter-spacing:.08em}
+.library-item small{font-size:10px;color:var(--muted);line-height:1.4}
+@media(max-width:560px){.library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.library-panel{padding:12px}}
+
+
+#pageCreator{display:none;position:fixed;z-index:22;inset:0;background:#02070dcc;backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:14px}
+#pageCreator.open{display:flex}
+.pagecreator-panel{width:min(420px,100%);background:linear-gradient(145deg,#10283c,#07111c);border:1px solid #28749a;padding:18px;box-shadow:0 20px 70px #000b}
+.pagecreator-panel h2{font-size:17px;letter-spacing:.12em;margin:0 0 6px}
+.pagecreator-panel p{font-size:10px;color:var(--muted);margin:0 0 15px}
+.pagecreator-panel input{width:100%;padding:12px;background:#06111c;color:#eff8ff;border:1px solid #28516b;font:inherit}
+.pagecreator-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:15px}
+
+
+/* PROJECT EDGE · Logitech native widget */
+.logi-widget{--logi-accent:#28bfff;min-width:0}
+.logi-head{display:flex;align-items:center;justify-content:space-between;gap:7px;margin-bottom:8px;flex-wrap:wrap}
+.logi-devices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.logi-device{min-width:0;padding:8px;border:1px solid #24516d;background:rgba(255,255,255,.025);border-radius:4px;display:flex;flex-direction:column;min-height:124px}
+.logi-device-top{display:flex;align-items:center;gap:6px}
+.logi-icon{font-size:18px;color:var(--cyan)}.logi-name{font-size:10px;font-weight:900;letter-spacing:.06em}
+.logi-sub{font-size:9px;color:var(--muted);margin-top:3px}
+.logi-meter{margin-top:auto;display:flex;flex-direction:column;align-items:flex-start;gap:3px;width:100%}
+.logi-value{font-size:22px;font-weight:900;margin:0;font-variant-numeric:tabular-nums;line-height:1}
+.logi-value small{font-size:11px;color:var(--muted)}
+.logi-bar{height:4px;flex:0 0 4px;background:#1b3043;margin:0;padding-top:0;overflow:hidden;width:100%}.logi-bar i{display:block;height:100%;background:linear-gradient(90deg,#087db8,var(--cyan),var(--orange));width:0;transition:width .4s}
+.logi-dpi strong{font-size:24px;color:var(--cyan)}.logi-dpi small{display:block;color:var(--muted);font-size:9px;margin-top:3px}
+.logi-status{font-size:9px;color:var(--gold);letter-spacing:.08em}.logi-foot{font-size:8px;color:var(--muted);margin-top:6px;line-height:1.5}
+@media(max-width:700px){.logi-devices{grid-template-columns:1fr}.logi-device{display:flex;flex-direction:column;align-items:stretch;min-height:104px}.logi-value{text-align:left}.logi-meter{margin-top:auto;width:100%}.logi-bar{margin:0;width:100%}}
+
+
+/* V1.8.10 · grille indépendante : aucune hauteur de ligne liée au voisin */
+body.editing main{overscroll-behavior:contain}
+.page .grid{grid-auto-rows:34px;grid-auto-flow:row;align-items:stretch}
+.page .card{grid-row:span var(--widget-rows,3);min-height:0;height:100%;}
+body.editing .page .grid{position:relative;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:34px;grid-auto-flow:row;min-height:340px;padding:6px;border:1px dashed #39718e;background-color:rgba(7,20,32,.45);background-image:linear-gradient(rgba(25,186,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(25,186,255,.08) 1px,transparent 1px);background-size:calc((100% - 18px)/4 + 4.5px) 42px;gap:8px}
+body.editing .page .card{touch-action:none;user-select:none;-webkit-user-select:none;min-height:0;cursor:grab}
+body.editing .page .card.dragging{opacity:.35;outline:2px dashed var(--orange)}
+body.editing .page .card.drop-target{outline:2px solid var(--orange);outline-offset:2px}
+.drop-slot{display:none}
+@media(max-width:700px){.page .grid{grid-auto-rows:32px;gap:6px}.page .card{grid-row:span var(--widget-rows,3)}body.editing .page .grid{grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:32px;gap:6px;padding:5px;background-size:calc((100% - 18px)/4 + 3px) 38px}body.editing .page .card{padding:8px;min-height:0}}
+
+/* V1.8.11 — contenu adaptatif indépendant de la taille de chaque widget */
+.page .card{container-type:size;container-name:edgewidget;display:flex;flex-direction:column;min-width:0;min-height:0}
+.page .card > .metric-label,.page .card > .panel-title{flex:0 0 auto;min-width:0;overflow-wrap:anywhere}
+.page .card .gauge-wrap{flex:1 1 auto;min-width:0;min-height:0;width:100%;margin:clamp(2px,1.5cqh,8px) 0 0;gap:clamp(5px,2cqw,14px);align-items:center;justify-content:center;flex-wrap:wrap;overflow:hidden}
+.page .card .gauge{width:min(92px,27cqw,58cqh);height:min(92px,27cqw,58cqh);flex:0 1 min(92px,27cqw,58cqh);min-width:42px;min-height:42px;max-width:100%;max-height:100%}
+.page .card .gauge:before{inset:7.5%}
+.page .card .gauge:after{mask:radial-gradient(farthest-side,transparent calc(100% - 12%),#000 calc(100% - 11%));-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 12%),#000 calc(100% - 11%))}
+.page .card .gauge-value{font-size:clamp(13px,6cqw,24px)}
+.page .card .gauge-value small{font-size:clamp(7px,2.5cqw,10px)}
+.page .card .gauge-side{flex:1 1 65px;min-width:0;max-width:100%;overflow-wrap:anywhere}
+.page .card .gauge-side .detail{font-size:clamp(8px,2.7cqw,10px);line-height:1.25}
+.page .card .metric{font-size:clamp(16px,9cqw,39px);overflow-wrap:anywhere;line-height:1.05}
+.page .card .unit{font-size:clamp(9px,3.5cqw,13px)}
+.page .card .detail{overflow-wrap:anywhere;line-height:1.3}
+.page .card .quick,.page .card .tilegrid,.page .card .logi-devices{min-width:0;max-width:100%}
+.page .card .logi-devices{grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(3px,1.5cqw,8px)}
+.page .card .logi-device{min-width:0;padding:clamp(5px,2cqw,10px)}
+.page .card .logi-name{overflow-wrap:anywhere;font-size:clamp(8px,2.8cqw,11px)}
+.page .card .logi-sub{font-size:clamp(7px,2.3cqw,10px)}
+@container edgewidget (max-height:145px){
+ .gauge-wrap{flex-wrap:nowrap!important;gap:5px!important}
+ .gauge{width:min(64px,24cqw,48cqh)!important;height:min(64px,24cqw,48cqh)!important;flex-basis:min(64px,24cqw,48cqh)!important;min-width:34px!important;min-height:34px!important}
+ .gauge-side{flex:1 1 0!important}
+ .gauge-side .detail{font-size:8px!important}
+ .gauge-side .pill{display:none}
+}
+@container edgewidget (max-width:175px){
+ .gauge-wrap{flex-direction:column;justify-content:center;gap:4px!important}
+ .gauge-side{text-align:center;flex:0 1 auto!important}
+ .gauge-side .detail{display:none}
+ .gauge{width:min(58px,34cqw,43cqh)!important;height:min(58px,34cqw,43cqh)!important;flex-basis:min(58px,34cqw,43cqh)!important}
+}
+@media(max-width:700px){
+ .page .card{padding:clamp(7px,2vw,11px)}
+ .page .card .gauge-wrap{gap:5px}
+ .page .card .logi-devices{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <div class="brand"><div class="logo">E</div><span>PROJECT <span style="color:var(--gold)">EDGE</span></span></div>
+  <div class="status">EDGE CORE · SIMULATION</div>
+  <div style="display:flex;align-items:center;gap:8px"><button id="editModeBtn" class="edit-mode-btn" onclick="toggleEditMode()">⚙ ÉDITER</button><div class="clock" id="clock">--:--:--</div></div>
+</header>
+<nav class="nav" aria-label="Navigation">
+  <button class="active" data-page="command">01 · COMMAND</button>
+  <button data-page="gaming">02 · GAMING</button>
+  <button data-page="space">03 · SPACE DICE</button>
+  <button data-page="tools">04 · OUTILS</button>
+</nav>
+<div class="editor-toolbar" id="editorToolbar">
+  <button onclick="addPage()">＋ NOUVELLE PAGE</button>
+  <button onclick="renameCurrentPage()">✎ RENOMMER</button>
+  <button onclick="addWidget()">▦ AJOUTER WIDGET</button>
+  <button onclick="resetLayout()">↺ RÉINITIALISER</button>
+  <span class="editor-hint">MODE ÉDITION · Glisse les blocs pour les réorganiser</span>
+</div>
+<main id="main">
+<section class="page active" id="command">
+ <div class="heading"><div><div class="eyebrow">TACTICAL SYSTEMS · LIVE FEED</div><h1>Command Center</h1></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end"><div class="sub">PERFORMANCE MONITOR // 01</div></div></div>
+ <div class="grid">
+  <article class="card"><div class="metric-label">Processeur · CPU</div><div class="gauge-wrap"><div class="gauge" id="cpuGauge" style="--p:24"><div class="gauge-value"><span id="cpu">24</span><small>%</small></div></div><div class="gauge-side"><div class="metric-label">CHARGE</div><div class="detail">Utilisation<br>processeur</div><span class="pill">LIVE DEMO</span></div></div></article>
+  <article class="card"><div class="metric-label">Carte graphique · GPU</div><div class="gauge-wrap"><div class="gauge" id="gpuGauge" style="--p:38"><div class="gauge-value"><span id="gpu">38</span><small>%</small></div></div><div class="gauge-side"><div class="metric-label">CHARGE</div><div class="detail">Utilisation<br>graphique</div><span class="pill">LIVE DEMO</span></div></div></article>
+  <article class="card"><div class="metric-label">Température CPU</div><div class="metric"><span id="ctemp">46</span><span class="unit"> °C</span></div><div class="detail">Capteur simulé</div></article>
+  <article class="card"><div class="metric-label">Température GPU</div><div class="metric"><span id="gtemp">51</span><span class="unit"> °C</span></div><div class="detail">Capteur simulé</div></article>
+  <article class="card wide"><div class="metric-label">Mémoire vive · RAM</div><div class="gauge-wrap" style="justify-content:flex-start"><div class="gauge ram" id="ramGauge" style="--p:57"><div class="gauge-value"><span id="ramPct">57</span><small>%</small></div></div><div class="gauge-side"><div class="metric" style="font-size:25px;margin:2px 0"><span id="ram">18.4</span><span class="unit"> / 32 Go</span></div><div class="detail">Mémoire utilisée · simulation</div><div class="detail" style="margin-top:5px;color:var(--gold)">RAM CAPACITY</div></div></div></article>
+  <article class="card wide"><div class="metric-label">Réseau local</div><div class="metric" style="font-size:23px">CONNECTÉ</div><div class="detail">Ethernet · Wi-Fi · LAN</div><div style="margin-top:10px"><span class="pill">MODE DÉMO</span></div></article>
+  <article class="card full"><h3 class="panel-title">Accès rapides</h3><div class="quick">
+   <button onclick="notify('Discord : raccourci à configurer')"><b>◉</b>Discord</button>
+   <button onclick="notify('Navigateur : raccourci à configurer')"><b>⌘</b>Web</button>
+   <button onclick="notify('Explorateur : raccourci à configurer')"><b>▤</b>Fichiers</button>
+   <button onclick="notify('Contrôle audio à connecter au PC')"><b>♫</b>Audio</button>
+  </div></article>
+ </div>
+</section>
+<section class="page" id="gaming">
+ <div class="heading"><div><div class="eyebrow">ESPACE GAMING</div><h1>Gaming Deck</h1></div><div class="sub">OUTILS & RACCOURCIS</div></div>
+ <div class="grid">
+  <article class="card wide"><h3 class="panel-title">Session de jeu</h3><div class="metric" style="font-size:25px">READY <span class="unit">/ EN ATTENTE</span></div><div class="detail">Les intégrations de jeux seront ajoutées ensuite.</div></article>
+  <article class="card wide"><h3 class="panel-title">Performance</h3><div class="metric" style="font-size:25px">— FPS</div><div class="detail">Compteur réel à connecter au PC.</div></article>
+  <article class="card full"><h3 class="panel-title">Lanceurs rapides</h3><div class="tilegrid">
+   <button class="tile" onclick="notify('Raccourci World of Warcraft à configurer')"><span class="ico">⚔</span><strong>World of Warcraft</strong><small>Lancer le jeu</small></button>
+   <button class="tile" onclick="notify('Raccourci Discord à configurer')"><span class="ico">◉</span><strong>Discord</strong><small>Communication</small></button>
+   <button class="tile" onclick="notify('Raccourci Steam à configurer')"><span class="ico">◈</span><strong>Steam</strong><small>Bibliothèque</small></button>
+   <button class="tile" onclick="notify('Raccourci navigateur à configurer')"><span class="ico">◎</span><strong>Navigateur</strong><small>Ouvrir le web</small></button>
+  </div></article>
+  <article class="card full"><h3 class="panel-title">État de la session</h3><div class="list"><div class="rowitem"><span>Mode d'affichage</span><span class="pill">PAYSAGE</span></div><div class="rowitem"><span>Connexion au PC</span><span class="pill">À CONFIGURER</span></div><div class="rowitem"><span>Source des données</span><span class="pill">SIMULATION</span></div></div></article>
+ </div>
+</section>
+<section class="page" id="space">
+ <div class="heading"><div><div class="eyebrow">CONSOLE DE PILOTAGE</div><h1>Space Dice Battle</h1></div><div class="sub">PROJECT MODULE</div></div>
+ <div class="grid">
+  <article class="card wide"><h3 class="panel-title">Accès au jeu</h3><div class="metric" style="font-size:22px">SPACE DICE</div><div class="detail">Portail du jeu et outils associés</div><button style="margin-top:14px;width:100%" onclick="window.open('https://space-dice-battle.onrender.com/','_blank')">Ouvrir Space Dice Battle ↗</button></article>
+  <article class="card wide"><h3 class="panel-title">Serveur</h3><div class="metric" style="font-size:22px;color:var(--green)">EN LIGNE*</div><div class="detail">*État indicatif, non vérifié en direct</div></article>
+  <article class="card full"><h3 class="panel-title">Console rapide</h3><div class="tilegrid">
+   <button class="tile" onclick="window.open('https://space-dice-battle.onrender.com/','_blank')"><span class="ico">✦</span><strong>Jouer</strong><small>Accéder au jeu</small></button>
+   <button class="tile" onclick="notify('Statut serveur : connexion API à développer')"><span class="ico">⌁</span><strong>Statut serveur</strong><small>Diagnostic</small></button>
+   <button class="tile" onclick="notify('Administration : module à développer')"><span class="ico">⚙</span><strong>Administration</strong><small>Outils futurs</small></button>
+  </div></article>
+ </div>
+</section>
+<section class="page" id="tools">
+ <div class="heading"><div><div class="eyebrow">COMMANDES PERSONNALISÉES</div><h1>Outils</h1></div><div class="sub">RACCOURCIS TACTILES</div></div>
+ <div class="grid">
+  <article class="card full"><h3 class="panel-title">Contrôles rapides · maquette</h3><div class="tilegrid">
+   <button class="tile" onclick="notify('Volume : contrôle Windows à connecter')"><span class="ico">🔊</span><strong>Volume</strong><small>Contrôle audio</small></button>
+   <button class="tile" onclick="notify('Lecture multimédia à connecter')"><span class="ico">▶</span><strong>Média</strong><small>Lecture / pause</small></button>
+   <button class="tile" onclick="notify('Capture écran : commande PC à connecter')"><span class="ico">▣</span><strong>Capture</strong><small>Capture écran</small></button>
+   <button class="tile" onclick="notify('Verrouillage : commande PC à connecter')"><span class="ico">⌑</span><strong>Verrouiller</strong><small>Session Windows</small></button>
+   <button class="tile" onclick="notify('Minuteur à développer')"><span class="ico">◷</span><strong>Minuteur</strong><small>Chronomètre</small></button>
+   <button class="tile" onclick="notify('Bouton personnalisable à définir')"><span class="ico">＋</span><strong>Personnaliser</strong><small>Ajouter une action</small></button>
+  </div></article>
+  <article class="card full"><h3 class="panel-title">À propos de cette version</h3><div class="list"><div class="rowitem"><span>Version</span><span>1.8 · Logitech Widget intégré</span></div><div class="rowitem"><span>Mode actuel</span><span class="pill">SIMULATION</span></div><div class="rowitem"><span>Connexion PC</span><span>Prochaine étape</span></div></div></article>
+ </div>
+</section>
+</main>
+<footer class="footer"><span><strong>EDGE</strong> SYSTEMS · TACTICAL CONTROL</span><span>V1.8.9 · ÉDITEUR TACTILE</span></footer>
+</div>
+
+
+
+<div id="pageCreator" role="dialog" aria-modal="true" aria-label="Créer une page">
+ <div class="pagecreator-panel">
+  <h2>NOUVELLE PAGE</h2>
+  <p>Crée un nouvel espace, puis ajoute les widgets de ton choix.</p>
+  <input id="newPageName" maxlength="28" placeholder="Nom de la page" autocomplete="off">
+  <div class="pagecreator-actions">
+   <button type="button" onclick="closePageCreator()">ANNULER</button>
+   <button type="button" onclick="confirmCreatePage()">CRÉER LA PAGE</button>
+  </div>
+ </div>
+</div>
+
+<div id="widgetLibrary" role="dialog" aria-modal="true" aria-label="Bibliothèque de widgets">
+ <div class="library-panel">
+  <div class="library-head"><h2>BIBLIOTHÈQUE DE WIDGETS</h2><button onclick="closeWidgetLibrary()">✕</button></div>
+  <div class="hint">Choisis un module pour l'ajouter à la page active. Tu pourras ensuite le configurer.</div>
+  <div class="library-grid">
+   <button class="library-item" onclick="createWidget('metric')"><span class="lib-ico">◉</span><strong>INDICATEUR</strong><small>Valeur, unité et description</small></button>
+   <button class="library-item" onclick="createWidget('gauge')"><span class="lib-ico">◌</span><strong>JAUGE CIRCULAIRE</strong><small>Progression avec dégradé EDGE</small></button>
+   <button class="library-item" onclick="createWidget('note')"><span class="lib-ico">▤</span><strong>TEXTE / NOTE</strong><small>Bloc de texte libre</small></button>
+   <button class="library-item" onclick="createWidget('link')"><span class="lib-ico">↗</span><strong>RACCOURCI</strong><small>Ouvrir un site ou une application web</small></button>
+   <button class="library-item" onclick="createWidget('clock')"><span class="lib-ico">◷</span><strong>HORLOGE</strong><small>Heure locale en direct</small></button>
+   <button class="library-item" onclick="createWidget('status')"><span class="lib-ico">⌁</span><strong>ÉTAT SYSTÈME</strong><small>Badge de statut personnalisable</small></button>
+   <button class="library-item" onclick="createWidget('logitech')"><span class="lib-ico">⌖</span><strong>LOGITECH CONTROL</strong><small>Batteries et connexion des périphériques</small></button>
+  </div>
+ </div>
+</div>
+
+<div id="widgetEditor" role="dialog" aria-modal="true" aria-label="Modifier le widget">
+ <div class="editor-panel">
+  <h2>CONFIGURATION DU WIDGET</h2>
+  <div class="hint">Modifie son apparence et sa disposition. Les changements sont sauvegardés localement.</div>
+  <div class="editor-field"><label for="weTitle">TITRE</label><input id="weTitle" maxlength="48"></div>
+  <div class="editor-field"><label for="weText">CONTENU / DESCRIPTION</label><textarea id="weText" maxlength="500"></textarea></div>
+  <div class="editor-field"><label for="weAccent">COULEUR D'ACCENT</label><select id="weAccent"><option value="default">Bleu / orange EDGE</option><option value="blue">Bleu électrique</option><option value="orange">Orange tactique</option><option value="green">Vert système</option><option value="gold">Or</option></select></div>
+  <div class="editor-field"><label for="weWidth">LARGEUR (COLONNES)</label><select id="weWidth"><option value="1">1 colonne</option><option value="2">2 colonnes</option><option value="3">3 colonnes</option><option value="4">4 colonnes</option></select></div><div class="editor-field"><label for="weHeight">HAUTEUR (UNITÉS)</label><select id="weHeight"><option value="2">2 unités</option><option value="3">3 unités</option><option value="4">4 unités</option><option value="5">5 unités</option><option value="6">6 unités</option><option value="8">8 unités</option><option value="10">10 unités</option></select></div>
+  <div class="editor-actions"><button type="button" onclick="closeWidgetEditor()">ANNULER</button><button type="button" onclick="applyWidgetEditor()">ENREGISTRER</button></div>
+ </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+
+const main=document.getElementById('main');
+const navEl=document.querySelector('.nav');
+let pages=[...document.querySelectorAll('.page')];
+let nav=[...navEl.querySelectorAll('button')];
+let currentPage=pages[0]?.id || 'command';
+let editMode=false;
+let dragCard=null;
+let editingCard=null;
+let pendingWidgetSize='';
+
+function refreshRefs(){
+  pages=[...document.querySelectorAll('.page')];
+  nav=[...navEl.querySelectorAll('button')];
+}
+function showPage(id){
+  currentPage=id;
+  refreshRefs();
+  pages.forEach(p=>p.classList.toggle('active',p.id===id));
+  nav.forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+  main.scrollTop=0;
+  if(editMode) decorateCards();
+}
+function notify(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(window.toastTimer);
+  window.toastTimer=setTimeout(()=>t.classList.remove('show'),2300);
+}
+function toggleEditMode(){
+  editMode=!editMode;
+  document.body.classList.toggle('editing',editMode);
+  const btn=document.getElementById('editModeBtn');
+  btn.textContent=editMode?'✓ TERMINER':'⚙ ÉDITER';
+  btn.style.borderColor=editMode?'var(--orange)':'';
+  document.getElementById('editorToolbar').style.display=editMode?'flex':'none';
+  decorateCards();
+  if(editMode) notify('Mode édition · glisse un widget vers une zone libre');
+  else {document.querySelectorAll('.drop-slot').forEach(x=>x.remove());saveWorkspace();notify('Disposition enregistrée sur cet appareil');}
+}
+function decorateCards(){
+  document.querySelectorAll('.page .grid').forEach(grid=>{
+    grid.querySelectorAll('.drop-slot').forEach(x=>x.remove());
+    grid.ondragover=e=>{if(editMode&&dragCard)e.preventDefault();};
+    grid.ondrop=e=>{if(!editMode||!dragCard)return;e.preventDefault();placeCardAtPoint(dragCard,e.clientX,e.clientY,grid);dragCard.classList.remove('dragging');dragCard=null;saveWorkspace();};
+  });
+  document.querySelectorAll('.page .card').forEach(card=>{
+    card.draggable=editMode;
+    if(!card.style.getPropertyValue('--widget-rows'))card.style.setProperty('--widget-rows','3');
+    if(!card.querySelector('.widget-tools')){const tools=document.createElement('div');tools.className='widget-tools';tools.innerHTML='<button type="button" title="Modifier" data-action="edit">✎</button><button type="button" title="Supprimer" data-action="delete">×</button>';card.appendChild(tools);}
+    card.querySelectorAll('.widget-tools button').forEach(b=>b.onclick=e=>{e.stopPropagation();if(b.dataset.action==='delete'){if(confirm('Supprimer ce widget ?')){card.remove();saveWorkspace();decorateCards();}}else openWidgetEditor(card);});
+    card.ondragstart=e=>{if(!editMode)return;dragCard=card;card.classList.add('dragging');e.dataTransfer.effectAllowed='move';};
+    card.ondragend=()=>{card.classList.remove('dragging');dragCard=null;saveWorkspace();};
+    let start=null,moved=false;
+    card.onpointerdown=e=>{if(!editMode||e.target.closest('button'))return;start={x:e.clientX,y:e.clientY};moved=false;try{card.setPointerCapture(e.pointerId)}catch(_){};};
+    card.onpointermove=e=>{if(!start||!editMode)return;if(Math.hypot(e.clientX-start.x,e.clientY-start.y)>8){moved=true;card.classList.add('dragging');e.preventDefault();}};
+    card.onpointerup=e=>{if(!start)return;if(moved){const grid=card.closest('.grid');placeCardAtPoint(card,e.clientX,e.clientY,grid);card.classList.remove('dragging');saveWorkspace();}start=null;moved=false;};
+    card.onpointercancel=()=>{start=null;moved=false;card.classList.remove('dragging');};
+  });
+}
+function placeCardAtPoint(card,x,y,grid){if(!grid)return;const r=grid.getBoundingClientRect();const style=getComputedStyle(grid);const cols=4;const gap=parseFloat(style.columnGap)||8;const cell=(r.width-gap*(cols-1))/cols;const col=Math.max(1,Math.min(cols,Math.floor((x-r.left)/(cell+gap))+1));const rowH=(parseFloat(style.gridAutoRows)||32)+(parseFloat(style.rowGap)||6);const row=Math.max(1,Math.floor((y-r.top)/(rowH))+1);card.style.gridColumn=`${Math.min(col,5-(parseInt(card.dataset.cols)||2))} / span ${parseInt(card.dataset.cols)||2}`;card.style.gridRow=`${row} / span ${parseInt(card.dataset.rows)||3}`;grid.appendChild(card);}
+
+function openWidgetEditor(card){
+  editingCard=card;
+  const title=card.querySelector('.metric-label,.panel-title,strong');
+  const description=card.querySelector('.detail');
+  document.getElementById('weTitle').value=title?.textContent.trim()||'Widget';
+  document.getElementById('weText').value=description?.textContent.trim()||'';
+  document.getElementById('weAccent').value=card.dataset.accent||'default';
+  document.getElementById('weWidth').value=card.dataset.cols|| (card.classList.contains('widget-size-4')?'4':card.classList.contains('widget-size-2')?'2':'1');
+  document.getElementById('weHeight').value=card.dataset.rows||card.style.getPropertyValue('--widget-rows')||'3';
+  document.getElementById('widgetEditor').classList.add('open');
+}
+function closeWidgetEditor(){
+  document.getElementById('widgetEditor').classList.remove('open');
+  editingCard=null;
+}
+function applyWidgetEditor(){
+  if(!editingCard)return;
+  const title=editingCard.querySelector('.metric-label,.panel-title,strong');
+  const description=editingCard.querySelector('.detail');
+  const newTitle=document.getElementById('weTitle').value.trim();
+  const newText=document.getElementById('weText').value.trim();
+  if(title&&newTitle)title.textContent=newTitle;
+  if(description)description.textContent=newText;
+  else if(newText){
+    const d=document.createElement('div');d.className='detail';d.textContent=newText;editingCard.appendChild(d);
+  }
+  editingCard.classList.remove('widget-size-1','widget-size-2','widget-size-4','wide','full');
+  const cols=Math.max(1,Math.min(4,parseInt(document.getElementById('weWidth').value)||2));
+  const rows=Math.max(2,Math.min(10,parseInt(document.getElementById('weHeight').value)||3));
+  editingCard.dataset.cols=cols;editingCard.dataset.rows=rows;editingCard.style.gridColumn=`span ${cols}`;editingCard.style.gridRow=`span ${rows}`;editingCard.style.setProperty('--widget-rows',rows);
+  const accent=document.getElementById('weAccent').value;
+  editingCard.dataset.accent=accent;
+  const colors={default:'',blue:'#19baff',orange:'#ff873b',green:'#56f0b0',gold:'#ffbd72'};
+  editingCard.style.setProperty('--widget-accent',colors[accent]||'');
+  if(colors[accent])editingCard.style.setProperty('--orange',colors[accent]);
+  else editingCard.style.removeProperty('--orange');
+  saveWorkspace();closeWidgetEditor();notify('Widget mis à jour');
+}
+document.getElementById('widgetEditor').addEventListener('click',e=>{
+  if(e.target.id==='widgetEditor')closeWidgetEditor();
+});
+
+function addPage(){
+  const modal=document.getElementById('pageCreator');
+  modal.classList.add('open');
+  const input=document.getElementById('newPageName');
+  input.value='';
+  setTimeout(()=>input.focus(),50);
+}
+function closePageCreator(){
+  document.getElementById('pageCreator').classList.remove('open');
+}
+function confirmCreatePage(){
+  const input=document.getElementById('newPageName');
+  const name=input.value.trim();
+  if(!name){input.focus();notify('Indique un nom pour la page');return;}
+  const id='custom_'+Date.now();
+  const page=document.createElement('section');
+  page.className='page';page.id=id;
+  page.innerHTML=`<div class="heading"><div><div class="eyebrow">ESPACE PERSONNALISÉ</div><h1>${escapeHtml(name)}</h1></div><div class="sub">CUSTOM WORKSPACE</div></div><div class="grid"></div>`;
+  main.appendChild(page);
+  const tab=document.createElement('button');
+  tab.dataset.page=id;tab.textContent=name.toUpperCase();
+  navEl.appendChild(tab);
+  closePageCreator();
+  bindNavigation();
+  showPage(id);
+  if(editMode)decorateCards();
+  saveWorkspace();
+  notify('Page créée · ajoute maintenant tes widgets');
+}
+document.getElementById('pageCreator').addEventListener('click',e=>{
+  if(e.target.id==='pageCreator')closePageCreator();
+});
+document.getElementById('newPageName').addEventListener('keydown',e=>{
+  if(e.key==='Enter')confirmCreatePage();
+  if(e.key==='Escape')closePageCreator();
+});
+function renameCurrentPage(){
+  const page=document.getElementById(currentPage);if(!page)return;
+  const h=page.querySelector('h1');
+  const tab=navEl.querySelector(`[data-page="${currentPage}"]`);
+  const value=prompt('Nouveau nom de la page :',h?.textContent||'Page');
+  if(value===null||!value.trim())return;
+  if(h)h.textContent=value.trim();if(tab)tab.textContent=value.trim().toUpperCase();
+  saveWorkspace();
+}
+
+function addWidget(){
+  if(!document.getElementById(currentPage))return;
+  document.getElementById('widgetLibrary').classList.add('open');
+}
+function closeWidgetLibrary(){document.getElementById('widgetLibrary').classList.remove('open');}
+document.getElementById('widgetLibrary').addEventListener('click',e=>{
+  if(e.target.id==='widgetLibrary')closeWidgetLibrary();
+});
+function createWidget(type){
+  const page=document.getElementById(currentPage);if(!page)return;
+  const grid=page.querySelector('.grid')||page;
+  const card=document.createElement('article');card.className='card widget-size-1';card.dataset.cols='1';card.dataset.rows='3';card.style.gridColumn='span 1';card.style.gridRow='span 3';card.style.setProperty('--widget-rows','3');
+  const uid='edge_'+type+'_'+Date.now();
+  if(type==='metric'){
+    card.innerHTML='<div class="metric-label">NOUVEL INDICATEUR</div><div class="metric">0<span class="unit"> </span></div><div class="detail">Valeur personnalisable</div>';
+  }else if(type==='gauge'){
+    card.innerHTML=`<div class="metric-label">NOUVELLE JAUGE</div><div class="gauge-wrap"><div class="gauge" id="${uid}" style="--p:45"><div class="gauge-value">45<small>%</small></div></div><div class="gauge-side"><div class="detail">Progression · démonstration</div></div></div>`;
+  }else if(type==='note'){
+    card.className='card widget-size-2';
+    card.innerHTML='<h3 class="panel-title">MA NOTE</h3><div class="detail" style="font-size:13px;line-height:1.6;white-space:pre-wrap">Clique sur le crayon pour écrire ton contenu.</div>';
+  }else if(type==='link'){
+    card.innerHTML=`<button class="tile" style="width:100%" onclick="window.open('https://example.com','_blank')"><span class="ico">↗</span><strong>RACCOURCI WEB</strong><small>Ouvrir le site de démonstration</small></button><div class="detail">Lien de démonstration · à personnaliser</div>`;
+  }else if(type==='clock'){
+    card.innerHTML='<div class="metric-label">HORLOGE LOCALE</div><div class="metric live-clock">--:--:--</div><div class="detail">Heure de cet appareil</div>';
+    const clock=card.querySelector('.live-clock');
+    const update=()=>{if(clock.isConnected)clock.textContent=new Date().toLocaleTimeString('fr-FR');};
+    update();setInterval(update,1000);
+  }else if(type==='status'){
+    card.innerHTML='<div class="metric-label">ÉTAT DU SYSTÈME</div><div class="metric" style="font-size:22px;color:var(--green)">OPÉRATIONNEL</div><div class="detail">Statut personnalisable</div>';
+  }else if(type==='logitech'){
+    card.className='card logi-widget widget-size-2';
+    card.dataset.widgetType='logitech';
+    card.dataset.bridgeUrl='http://192.168.1.160:8765';
+    card.innerHTML=`
+      <div class="logi-head"><div><div class="metric-label">PÉRIPHÉRIQUES SANS FIL</div><h3 class="panel-title" style="margin:4px 0 0">LOGITECH CONTROL</h3></div><span class="pill logi-status" data-logi-state>EN ATTENTE DU PC</span></div>
+      <div class="logi-devices">
+        <div class="logi-device"><div class="logi-device-top"><span class="logi-icon">⌨</span><div><div class="logi-name">G915 X LIGHTSPEED</div><div class="logi-sub">Clavier · batterie</div></div></div><div class="logi-meter"><div class="logi-value" data-logi-keyboard>—<small>%</small></div><div class="logi-bar"><i data-logi-keyboard-bar></i></div></div></div>
+        <div class="logi-device"><div class="logi-device-top"><span class="logi-icon">⌖</span><div><div class="logi-name">G502 X LIGHTSPEED</div><div class="logi-sub">Souris · batterie</div></div></div><div class="logi-meter"><div class="logi-value" data-logi-mouse>—<small>%</small></div><div class="logi-bar"><i data-logi-mouse-bar></i></div></div></div>
+        <div class="logi-device"><div class="logi-device-top"><span class="logi-icon">◖</span><div><div class="logi-name">PRO X WIRELESS</div><div class="logi-sub">Casque · batterie estimée</div></div></div><div class="logi-meter"><div class="logi-value" data-logi-headset>—<small>%</small></div><div class="logi-bar"><i data-logi-headset-bar></i></div></div></div>
+      </div>
+      <div class="logi-foot" data-logi-note>Bridge local · lecture seule · actualisation automatique.</div>`;
+  }
+  grid.appendChild(card);closeWidgetLibrary();decorateCards();saveWorkspace();if(type==='logitech')initLogitechWidgets();
+  notify('Widget ajouté · ouvre le crayon pour le configurer');
+}
+
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function escapeAttr(s){return escapeHtml(s).replace(/`/g,'');}
+function saveWorkspace(){
+  const data={pages:[],currentPage};
+  document.querySelectorAll('.page').forEach(p=>{
+    const clone=p.cloneNode(true);
+    clone.querySelectorAll('.widget-tools,.drop-slot').forEach(x=>x.remove());
+    clone.querySelectorAll('.card').forEach(c=>{c.draggable=false;c.classList.remove('dragging','drag-over');});
+    data.pages.push({id:p.id,html:clone.innerHTML});
+  });
+  data.tabs=[...navEl.querySelectorAll('button')].map(b=>({id:b.dataset.page,label:b.textContent}));
+  try{localStorage.setItem('projectEdgeWorkspace',JSON.stringify(data));}catch(e){notify('Sauvegarde locale indisponible');}
+}
+function loadWorkspace(){
+  try{
+    const raw=localStorage.getItem('projectEdgeWorkspace');if(!raw)return;
+    const data=JSON.parse(raw);if(!data.pages?.length)return;
+    main.innerHTML='';
+    data.pages.forEach(item=>{const s=document.createElement('section');s.className='page';s.id=item.id;s.innerHTML=item.html;main.appendChild(s);});
+    navEl.innerHTML='';
+    data.tabs.forEach(t=>{const b=document.createElement('button');b.dataset.page=t.id;b.textContent=t.label;navEl.appendChild(b);});
+    currentPage=data.currentPage||data.pages[0].id;
+  }catch(e){console.warn('Workspace non chargé',e);}
+}
+function resetLayout(){
+  if(!confirm('Revenir à la disposition initiale ? Cela effacera les pages et widgets personnalisés enregistrés sur cet appareil.'))return;
+  localStorage.removeItem('projectEdgeWorkspace');location.reload();
+}
+function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
+loadWorkspace();
+refreshRefs();
+// Bind every navigation tab, including the four tabs present in the original layout.
+function bindNavigation(){
+  refreshRefs();
+  nav.forEach(button=>{
+    button.onclick=()=>showPage(button.dataset.page);
+  });
+}
+bindNavigation();
+showPage(currentPage);
+initLogitechWidgets();
+tick();
+setInterval(tick,1000);
+document.querySelector('main').addEventListener('touchstart',e=>{window.edgeTouchX=e.changedTouches[0].screenX;window.edgeTouchY=e.changedTouches[0].screenY},{passive:true});
+document.querySelector('main').addEventListener('touchend',e=>{let dx=e.changedTouches[0].screenX-window.edgeTouchX,dy=e.changedTouches[0].screenY-window.edgeTouchY;if(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy)*1.25){let i=pages.findIndex(p=>p.classList.contains('active'));let n=Math.max(0,Math.min(pages.length-1,i+(dx<0?1:-1)));showPage(pages[n].id)}},{passive:true});
+function updateGauge(valueId,gaugeId,value){
+  const gauge=document.getElementById(gaugeId);if(!gauge)return;
+  value=Math.max(0,Math.min(100,Number(value)));
+  const target=document.getElementById(valueId);if(target)target.textContent=value;
+  gauge.style.setProperty('--p',value);
+}
+function applyReadings(cpu,gpu,ramPct,ramGb,cpuTemp,gpuTemp){
+  updateGauge('cpu','cpuGauge',cpu);updateGauge('gpu','gpuGauge',gpu);updateGauge('ramPct','ramGauge',ramPct);
+  const ram=document.getElementById('ram'),ct=document.getElementById('ctemp'),gt=document.getElementById('gtemp');
+  if(ram)ram.textContent=ramGb;if(ct)ct.textContent=cpuTemp;if(gt)gt.textContent=gpuTemp;
+}
+function normalReadings(){
+  applyReadings(Math.round(12+Math.random()*48),Math.round(22+Math.random()*48),Math.round(50+Math.random()*18),(16+Math.random()*5).toFixed(1),42+Math.round(Math.random()*13),47+Math.round(Math.random()*14));
+}
+normalReadings();setInterval(normalReadings,1800);
+
+
+// Logitech bridge integration: data-only, read-only, same-origin not required (CORS enabled by bridge).
+function logiText(el,value){if(el)el.textContent=value;}
+function logiBattery(card,selector,barSelector,battery,estimated=false){
+  const value=card.querySelector(selector),bar=card.querySelector(barSelector);
+  let pct=null;
+  if(battery&&Number.isFinite(Number(battery.percentage)))pct=Number(battery.percentage);
+  else if(battery&&Number.isFinite(Number(battery.percentage_estimate)))pct=Number(battery.percentage_estimate);
+  if(pct!==null){
+    logiText(value,Math.round(pct)+'%');
+    if(bar)bar.style.width=Math.max(0,Math.min(100,pct))+'%';
+    card.dataset['last'+selector.replace(/[^a-z]/gi,'')]=String(Math.round(pct));
+    if(value)value.dataset.valid='1';
+  } else if(value?.dataset.valid!=='1') {
+    logiText(value,'—%');
+  }
+}
+function logiHasMissingBattery(card){
+  return ['[data-logi-keyboard]','[data-logi-mouse]','[data-logi-headset]'].some(sel=>{
+    const el=card.querySelector(sel);
+    return !el || el.dataset.valid!=='1';
+  });
+}
+function scheduleLogiStartupRetry(card){
+  if(!card || !logiHasMissingBattery(card)){
+    if(card){card.dataset.logiRetryIndex='0'; if(card._logiRetryTimer){clearTimeout(card._logiRetryTimer);card._logiRetryTimer=null;}}
+    return;
+  }
+  const delays=[5000,10000,20000];
+  const index=Number(card.dataset.logiRetryIndex||0);
+  if(index>=delays.length || card._logiRetryTimer)return;
+  card.dataset.logiRetryIndex=String(index+1);
+  card._logiRetryTimer=setTimeout(()=>{card._logiRetryTimer=null;refreshLogitechWidget(card,false);},delays[index]);
+}
+async function refreshLogitechWidget(card,manual=false){
+  if(!card||card.dataset.logiBusy==='1')return;
+  const state=card.querySelector('[data-logi-state]');
+  const base=(card.dataset.bridgeUrl||'').trim().replace(/\/$/,'');
+  if(!base){logiText(state,'ADRESSE MANQUANTE');return;}
+  card.dataset.logiBusy='1';
+  try{
+    const response=await fetch(base+'/api/diagnostic',{cache:'no-store',signal:AbortSignal.timeout(4500)});
+    if(!response.ok)throw new Error('HTTP '+response.status);
+    const d=await response.json();
+    if(!d.ok)throw new Error(d.error||'Diagnostic incomplet');
+    const devices=d.devices||[];
+    const keyboard=devices.find(x=>x.device_index===1||x.receiver_device_index===1)||devices[0];
+    const mouse=devices.find(x=>x.device_index===2||x.receiver_device_index===2)||devices[1];
+    const headset=(d.headset_usb_interfaces||[]).find(x=>x.device==='PRO X Wireless');
+    const hb=headset?.battery_diagnostic?.battery;
+    if(keyboard?.battery && (keyboard.battery.read || keyboard.battery.status_read || keyboard.battery.percentage!==undefined))
+      logiBattery(card,'[data-logi-keyboard]','[data-logi-keyboard-bar]',keyboard.battery);
+    if(mouse?.battery && (mouse.battery.read || mouse.battery.status_read || mouse.battery.percentage!==undefined))
+      logiBattery(card,'[data-logi-mouse]','[data-logi-mouse-bar]',mouse.battery);
+    if(hb && hb.read) logiBattery(card,'[data-logi-headset]','[data-logi-headset-bar]',hb,true);
+    logiText(state,'● CONNECTÉ · V2.9.2');
+    state.style.color='var(--green)';
+    const headsetNote=card.querySelector('[data-logi-headset]')?.parentElement?.querySelector('.logi-sub');
+    if(headsetNote)headsetNote.textContent=hb?.percentage_is_estimate?'Casque · estimation batterie':'Casque · batterie';
+    logiText(card.querySelector('[data-logi-note]'),'Bridge Logitech V2.9.2 · lecture seule · dernière lecture '+new Date().toLocaleTimeString('fr-FR')+'. '+(d.warning||'')+' '+(headset?.battery_diagnostic?.connected?'Casque connecté.':'Casque non détecté.'));
+    card.dataset.bridgeUrl=base;
+  }catch(e){
+    logiText(state,'○ PC INJOIGNABLE');state.style.color='var(--gold)';
+    logiText(card.querySelector('[data-logi-note]'),'Connexion impossible : '+e.message+'. Vérifie que le bridge tourne sur le PC et que l’adresse IP est correcte.');
+  }finally{card.dataset.logiBusy='0';scheduleLogiStartupRetry(card);}
+}
+function initLogitechWidgets(){
+  document.querySelectorAll('.logi-widget').forEach(card=>{
+    // Adresse LAN du PC : accessible depuis le navigateur PC et les appareils du réseau.
+    if(!card.dataset.bridgeUrl)card.dataset.bridgeUrl='http://192.168.1.160:8765';
+    refreshLogitechWidget(card,false);
+  });
+}
+// Batteries : lecture immédiate, puis tentatives rapprochées si une valeur manque (5 s, 10 s, 20 s). Ensuite, actualisation normale toutes les 2 minutes.
+setInterval(()=>document.querySelectorAll('.logi-widget').forEach(card=>refreshLogitechWidget(card,false)),120000);
+
+</script>
+</body>
+</html>

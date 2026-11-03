@@ -1,0 +1,33 @@
+PROJECT EDGE V1.8.10 – GRILLE LIBRE
+
+Cette version reprend le projet V1.8.9 et améliore le placement des widgets.
+
+NOUVEAUTÉS :
+- Grille à hauteur de rangée fixe : un widget haut ne déforme plus les autres widgets de sa rangée.
+- Chaque widget possède sa propre largeur (1 à 4 colonnes) et sa propre hauteur (2 à 10 unités).
+- Réglages largeur/hauteur dans le crayon de chaque widget.
+- Déplacement tactile et souris avec placement à l'emplacement visé dans la grille.
+- Les espaces vides restent disponibles pour organiser librement la page.
+- La disposition et les dimensions sont sauvegardées localement.
+
+Le bridge Logitech reste inchangé. L'intégration Logitech reste en lecture seule.
+
+DÉMARRAGE :
+1. Décompresser l'archive.
+2. Lancer DEMARRER_BRIDGE.bat sur le PC.
+3. Ouvrir PROJECT_EDGE_v1.8.10_GRILLE_LIBRE.html.
+4. Activer ÉDITER, puis utiliser le crayon pour régler largeur et hauteur.
+5. Faire glisser les widgets vers les cellules souhaitées.
+
+
+VERSION 1.8.11 — contenu des widgets adaptatif : jauges circulaires redimensionnées selon les dimensions réelles de chaque carte, centrage et ajustement des textes.
+
+
+V1.8.12 : actualisation automatique des batteries Logitech toutes les 2 minutes. Une lecture initiale est effectuée à l’ouverture du tableau de bord. Le bridge Python et le fichier de démarrage restent inchangés.
+
+V1.8.13 : démarrage batterie renforcé.
+- Lecture immédiate à l'ouverture.
+- Si une ou plusieurs batteries n'ont pas encore de valeur valide : nouvelles tentatives après 5 s, puis 10 s, puis 20 s.
+- Dès que les trois valeurs sont récupérées, les tentatives rapprochées s'arrêtent.
+- En fonctionnement normal, actualisation toutes les 2 minutes.
+- Les dernières valeurs valides restent affichées pendant les tentatives.
