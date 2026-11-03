@@ -1,0 +1,1503 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#080d14">
+<title>PROJECT EDGE · V2.0.9 BOUTON ÉDITION</title>
+<style>
+:root{--bg:#05090f;--panel:#0b1522;--panel2:#102238;--line:#1b3b55;--blue:#19baff;--cyan:#7beaff;--orange:#ff7a32;--gold:#ffbd72;--text:#eff8ff;--muted:#7892a8;--green:#56f0b0;--red:#ff536c}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#05090f;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;overflow:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(rgba(25,186,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(25,186,255,.04) 1px,transparent 1px);background-size:34px 34px;mask-image:linear-gradient(to bottom,#000,transparent 90%);opacity:.55}
+body:after{content:"";position:fixed;inset:-40%;pointer-events:none;background:conic-gradient(from 0deg,transparent 0 78%,rgba(25,186,255,.045) 82%,transparent 88%);animation:radar 28s linear infinite}
+@keyframes radar{to{transform:rotate(360deg)}}@keyframes pulse{0%,100%{opacity:.65;box-shadow:0 0 5px var(--blue)}50%{opacity:1;box-shadow:0 0 18px var(--blue)}}@keyframes scan{0%{transform:translateY(-120%)}100%{transform:translateY(300%)}}
+button{font:inherit;color:inherit;border:1px solid #24516d;background:linear-gradient(135deg,#10283c,#09131f);clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));padding:11px 14px;cursor:pointer;transition:.18s}
+button:hover{border-color:var(--cyan);filter:brightness(1.25);box-shadow:0 0 18px #19baff24}button:active{transform:scale(.97)}
+.app{height:100dvh;display:flex;flex-direction:column;max-width:1600px;margin:auto;padding:clamp(9px,1.7vw,20px);gap:11px;position:relative;z-index:1}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:46px;border-bottom:1px solid #18334a;padding-bottom:9px}
+.brand{display:flex;align-items:center;gap:10px;letter-spacing:.19em;font-weight:900;font-size:clamp(14px,2vw,19px);text-shadow:0 0 16px #19baff55}
+.logo{width:36px;height:36px;display:grid;place-items:center;color:#06111b;font-weight:1000;font-style:italic;background:linear-gradient(135deg,var(--cyan),var(--blue) 58%,var(--orange));clip-path:polygon(18% 0,100% 0,82% 100%,0 100%);box-shadow:0 0 22px #19baff55}
+.status{font-size:10px;color:var(--green);letter-spacing:.15em;white-space:nowrap}.status:before{content:"";display:inline-block;width:7px;height:7px;background:var(--green);border-radius:50%;margin-right:8px;animation:pulse 1.7s infinite}
+.clock{font-variant-numeric:tabular-nums;color:var(--cyan);font-size:clamp(12px,1.5vw,15px);letter-spacing:.1em}
+.nav{display:flex;gap:7px;overflow:auto;scrollbar-width:none}.nav button{white-space:nowrap;font-size:11px;letter-spacing:.1em;color:#83a1b8;padding:9px 14px;border-color:#1c3b53}.nav button.active{color:#fff;border-color:var(--blue);background:linear-gradient(110deg,#123e5c,#0d1d2c);box-shadow:inset 0 -2px var(--orange),0 0 18px #19baff20}
+main{flex:1;min-height:0;overflow:auto;scrollbar-width:thin;scrollbar-color:#24516d transparent}
+.page{display:none;animation:pagein .28s ease}.page.active{display:block}@keyframes pagein{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+.heading{display:flex;justify-content:space-between;align-items:end;margin:5px 0 14px;gap:10px;position:relative}.heading:after{content:"";position:absolute;bottom:-7px;left:0;width:clamp(100px,22vw,260px);height:2px;background:linear-gradient(90deg,var(--orange),var(--blue),transparent)}
+.eyebrow{font-size:10px;color:var(--orange);letter-spacing:.27em;font-weight:900}.heading h1{font-size:clamp(24px,4.4vw,39px);margin:3px 0 0;letter-spacing:.025em;text-transform:uppercase;text-shadow:0 0 24px #19baff35}.sub{font-size:10px;color:var(--muted);letter-spacing:.16em}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:34px;grid-auto-flow:dense;gap:10px;align-items:stretch}
+.card{background:linear-gradient(145deg,rgba(16,36,55,.96),rgba(7,16,26,.97));border:1px solid #1b405a;border-radius:3px;padding:14px;min-width:0;position:relative;overflow:hidden;box-shadow:0 8px 26px #0006,inset 0 1px #ffffff08}
+.card:before{content:"";position:absolute;top:0;left:0;width:42px;height:2px;background:var(--widget-accent,var(--orange));box-shadow:0 0 12px var(--widget-accent,var(--orange))}
+.card:after{content:"";position:absolute;right:-23px;top:-23px;width:55px;height:55px;border:1px solid #1c4966;transform:rotate(45deg);opacity:.7}
+.card.wide{grid-column:span 2}.card.full{grid-column:1/-1}.page .card{grid-row:span var(--widget-rows,3);min-height:0}
+.metric-label{font-size:10px;letter-spacing:.17em;color:#8ba8bd;text-transform:uppercase;font-weight:800}
+.metric{font-size:clamp(25px,4.2vw,39px);font-weight:850;margin:7px 0 2px;font-variant-numeric:tabular-nums;letter-spacing:-.04em;text-shadow:0 0 18px #19baff30}
+.unit{font-size:13px;color:var(--cyan);font-weight:700}.detail{font-size:10px;color:var(--muted);letter-spacing:.04em}
+.bar{height:6px;background:#1b3043;margin-top:12px;overflow:hidden;position:relative;clip-path:polygon(0 0,100% 0,98% 100%,0 100%)}
+.bar i{display:block;height:100%;width:var(--v,50%);background:linear-gradient(90deg,#087db8,var(--cyan),var(--orange));box-shadow:0 0 15px #19baff99;transition:width .7s ease}
+
+.gauge-wrap{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:8px}
+.gauge{--p:50;width:92px;height:92px;flex:0 0 92px;border-radius:50%;display:grid;place-items:center;position:relative;
+background:conic-gradient(from -90deg,#23d7ff 0%,#258dff 50%,#ff873b 100%);
+box-shadow:0 0 18px #19baff40;transition:filter .45s ease}
+.gauge:before{content:"";position:absolute;inset:7px;border-radius:50%;background:radial-gradient(circle at 35% 25%,#142a3d,#07111c 72%);border:1px solid #28445b;z-index:1}
+.gauge:after{content:"";position:absolute;inset:0;border-radius:50%;
+background:conic-gradient(from -90deg,transparent 0% calc(var(--p)*1%),#1b3043 calc(var(--p)*1%) 100%);
+z-index:0;mask:radial-gradient(farthest-side,transparent calc(100% - 12px),#000 calc(100% - 11px));
+-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 12px),#000 calc(100% - 11px))}
+
+.gauge-value{position:relative;z-index:2;font-size:24px;font-weight:900;letter-spacing:-.06em;text-shadow:0 0 15px color-mix(in srgb,var(--gauge-color) 65%,transparent);font-variant-numeric:tabular-nums}
+.gauge-value small{font-size:10px;color:var(--muted);letter-spacing:0;margin-left:1px}
+.gauge-side{min-width:0}.gauge-side .metric-label{font-size:9px}.gauge-side .detail{margin-top:6px;line-height:1.4}
+
+.panel-title{font-size:11px;letter-spacing:.19em;color:var(--gold);margin:0 0 12px;text-transform:uppercase;font-weight:900}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.quick button{min-height:70px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:7px;font-size:10px;letter-spacing:.08em;color:#dceafa}.quick b{font-size:21px;color:var(--cyan);text-shadow:0 0 14px #19baff99}
+.tilegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.tile{min-height:105px;text-align:left;display:flex;flex-direction:column;justify-content:space-between}.tile .ico{font-size:24px;color:var(--cyan);text-shadow:0 0 14px #19baff88}.tile strong{letter-spacing:.05em;text-transform:uppercase;font-size:11px}.tile small{color:var(--muted);font-size:10px}
+.list{display:grid;gap:8px}.rowitem{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #203b50;font-size:11px}.pill{font-size:9px;padding:5px 9px;border:1px solid #28688a;border-radius:2px;color:var(--cyan);letter-spacing:.12em}
+.footer{display:flex;justify-content:space-between;align-items:center;color:#627e94;font-size:9px;letter-spacing:.14em;padding-top:2px}.footer strong{color:var(--orange);font-weight:900}
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);opacity:0;background:#102b40;border:1px solid var(--cyan);border-left:3px solid var(--orange);padding:11px 16px;font-size:12px;transition:.25s;pointer-events:none;z-index:5}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:700px){.app{padding:9px;gap:8px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card{padding:11px}.card.wide{grid-column:span 2}.quick{gap:6px}.quick button{padding:8px 4px;min-height:62px;font-size:9px}.tilegrid{grid-template-columns:repeat(2,1fr)}.heading{margin-bottom:12px}.sub{display:none}}
+@media(max-height:480px) and (orientation:landscape){.app{padding:7px 13px;gap:6px}.top{min-height:33px}.logo{width:29px;height:29px}.nav button{padding:7px 10px}.heading{margin:0 0 9px}.heading h1{font-size:24px}.card{padding:9px}.metric{font-size:24px}.grid{gap:7px}.footer{font-size:8px}}
+
+.edit-mode-btn{padding:8px 10px;font-size:9px;letter-spacing:.1em;white-space:nowrap}
+.editor-toolbar{display:none;align-items:center;gap:7px;flex-wrap:wrap;padding:8px;border:1px solid #24516d;background:#091725;border-radius:3px}
+body.editing .editor-toolbar{display:flex}
+.editor-toolbar button{font-size:10px;padding:8px 10px}
+.editor-hint{font-size:9px;color:var(--gold);letter-spacing:.08em;margin-left:auto}
+body.editing .page .card{outline:1px dashed #2d83aa;outline-offset:2px;cursor:grab}
+body.editing .page .card.dragging{opacity:.35}
+body.editing .page .card.drag-over{outline:2px solid var(--orange);background:#172b3c}
+.widget-tools{display:none;position:absolute;z-index:4;top:7px;right:7px;gap:4px}
+body.editing .widget-tools{display:flex}
+.widget-tools button{padding:4px 7px;font-size:10px;background:#10283c}
+.page-tab-tools{display:none;gap:4px;margin-left:4px}
+body.editing .page-tab-tools{display:inline-flex}
+@media(max-width:700px){.edit-mode-btn{font-size:8px;padding:7px}.editor-hint{width:100%;margin-left:0}}
+
+
+.widget-size-1{grid-column:span 1!important}
+.widget-size-2{grid-column:span 2!important}
+.widget-size-4{grid-column:1/-1!important}
+body.editing .card{touch-action:pan-y}
+#widgetEditor{display:none;position:fixed;z-index:20;inset:0;background:#02070dcc;backdrop-filter:blur(7px);align-items:center;justify-content:center;padding:14px}
+#widgetEditor.open{display:flex}
+.editor-panel{width:min(440px,100%);max-height:90dvh;overflow:auto;background:linear-gradient(145deg,#10283c,#07111c);border:1px solid #28749a;box-shadow:0 20px 70px #000b,0 0 35px #19baff20;padding:18px}
+.editor-panel h2{font-size:17px;letter-spacing:.12em;margin:0 0 5px}
+.editor-panel .hint{font-size:10px;color:var(--muted);margin-bottom:17px}
+.editor-field{display:grid;gap:6px;margin:12px 0}
+.editor-field label{font-size:10px;color:var(--gold);letter-spacing:.12em}
+.editor-field input,.editor-field textarea,.editor-field select{width:100%;padding:11px;background:#06111c;color:#eff8ff;border:1px solid #28516b;border-radius:2px;font:inherit}
+.editor-field textarea{min-height:90px;resize:vertical}
+.editor-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;flex-wrap:wrap}
+.size-options{display:flex;gap:7px}.size-options button{flex:1;padding:9px 5px;font-size:10px}
+@media(max-width:700px){.editor-panel{padding:14px}.widget-size-2{grid-column:span 2!important}}
+
+
+#widgetLibrary{display:none;position:fixed;z-index:21;inset:0;background:#02070dcc;backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:14px}
+#widgetLibrary.open{display:flex}
+.library-panel{width:min(760px,100%);max-height:92dvh;overflow:auto;background:linear-gradient(145deg,#10283c,#07111c);border:1px solid #28749a;padding:18px;box-shadow:0 20px 70px #000b}
+.library-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:5px}
+.library-head h2{font-size:18px;letter-spacing:.13em;margin:0}
+.library-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
+.library-item{min-height:112px;text-align:left;display:flex;flex-direction:column;gap:7px;padding:13px}
+.library-item .lib-ico{font-size:24px;color:var(--cyan)}
+.library-item strong{font-size:11px;letter-spacing:.08em}
+.library-item small{font-size:10px;color:var(--muted);line-height:1.4}
+@media(max-width:560px){.library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.library-panel{padding:12px}}
+
+
+#pageCreator{display:none;position:fixed;z-index:22;inset:0;background:#02070dcc;backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:14px}
+#pageCreator.open{display:flex}
+.pagecreator-panel{width:min(420px,100%);background:linear-gradient(145deg,#10283c,#07111c);border:1px solid #28749a;padding:18px;box-shadow:0 20px 70px #000b}
+.pagecreator-panel h2{font-size:17px;letter-spacing:.12em;margin:0 0 6px}
+.pagecreator-panel p{font-size:10px;color:var(--muted);margin:0 0 15px}
+.pagecreator-panel input{width:100%;padding:12px;background:#06111c;color:#eff8ff;border:1px solid #28516b;font:inherit}
+.pagecreator-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:15px}
+
+
+/* PROJECT EDGE · Logitech native widget */
+.logi-widget{--logi-accent:#28bfff;min-width:0}
+.logi-head{display:flex;align-items:center;justify-content:space-between;gap:7px;margin-bottom:8px;flex-wrap:wrap}
+.logi-devices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.logi-device{min-width:0;padding:8px;border:1px solid #24516d;background:rgba(255,255,255,.025);border-radius:4px;display:flex;flex-direction:column;min-height:124px}
+.logi-device-top{display:flex;align-items:center;gap:6px}
+.logi-icon{font-size:18px;color:var(--cyan)}.logi-name{font-size:10px;font-weight:900;letter-spacing:.06em}
+.logi-sub{font-size:9px;color:var(--muted);margin-top:3px}
+.logi-meter{margin-top:auto;display:flex;flex-direction:column;align-items:flex-start;gap:3px;width:100%}
+.logi-value{font-size:22px;font-weight:900;margin:0;font-variant-numeric:tabular-nums;line-height:1}
+.logi-value small{font-size:11px;color:var(--muted)}
+.logi-bar{height:4px;flex:0 0 4px;background:#1b3043;margin:0;padding-top:0;overflow:hidden;width:100%}.logi-bar i{display:block;height:100%;background:linear-gradient(90deg,#087db8,var(--cyan),var(--orange));width:0;transition:width .4s}
+.logi-dpi strong{font-size:24px;color:var(--cyan)}.logi-dpi small{display:block;color:var(--muted);font-size:9px;margin-top:3px}
+.logi-status{font-size:9px;color:var(--gold);letter-spacing:.08em}.logi-foot{font-size:8px;color:var(--muted);margin-top:6px;line-height:1.5}
+@media(max-width:700px){.logi-devices{grid-template-columns:1fr}.logi-device{display:flex;flex-direction:column;align-items:stretch;min-height:104px}.logi-value{text-align:left}.logi-meter{margin-top:auto;width:100%}.logi-bar{margin:0;width:100%}}
+
+
+/* V1.8.10 · grille indépendante : aucune hauteur de ligne liée au voisin */
+body.editing main{overscroll-behavior:contain}
+.page .grid{grid-auto-rows:34px;grid-auto-flow:row;align-items:stretch}
+.page .card{grid-row:span var(--widget-rows,3);min-height:0;height:100%;}
+body.editing .page .grid{position:relative;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:34px;grid-auto-flow:row;min-height:340px;padding:6px;border:1px dashed #39718e;background-color:rgba(7,20,32,.45);background-image:linear-gradient(rgba(25,186,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(25,186,255,.08) 1px,transparent 1px);background-size:calc((100% - 18px)/4 + 4.5px) 42px;gap:8px}
+body.editing .page .card{touch-action:none;user-select:none;-webkit-user-select:none;min-height:0;cursor:grab}
+body.editing .page .card.dragging{opacity:.35;outline:2px dashed var(--orange)}
+body.editing .page .card.drop-target{outline:2px solid var(--orange);outline-offset:2px}
+.drop-slot{display:none}
+@media(max-width:700px){.page .grid{grid-auto-rows:32px;gap:6px}.page .card{grid-row:span var(--widget-rows,3)}body.editing .page .grid{grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:32px;gap:6px;padding:5px;background-size:calc((100% - 18px)/4 + 3px) 38px}body.editing .page .card{padding:8px;min-height:0}}
+
+/* V1.8.11 — contenu adaptatif indépendant de la taille de chaque widget */
+.page .card{container-type:size;container-name:edgewidget;display:flex;flex-direction:column;min-width:0;min-height:0}
+.page .card > .metric-label,.page .card > .panel-title{flex:0 0 auto;min-width:0;overflow-wrap:anywhere}
+.page .card .gauge-wrap{flex:1 1 auto;min-width:0;min-height:0;width:100%;margin:clamp(2px,1.5cqh,8px) 0 0;gap:clamp(5px,2cqw,14px);align-items:center;justify-content:center;flex-wrap:wrap;overflow:hidden}
+.page .card .gauge{width:min(92px,27cqw,58cqh);height:min(92px,27cqw,58cqh);flex:0 1 min(92px,27cqw,58cqh);min-width:42px;min-height:42px;max-width:100%;max-height:100%}
+.page .card .gauge:before{inset:7.5%}
+.page .card .gauge:after{mask:radial-gradient(farthest-side,transparent calc(100% - 12%),#000 calc(100% - 11%));-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 12%),#000 calc(100% - 11%))}
+.page .card .gauge-value{font-size:clamp(13px,6cqw,24px)}
+.page .card .gauge-value small{font-size:clamp(7px,2.5cqw,10px)}
+.page .card .gauge-side{flex:1 1 65px;min-width:0;max-width:100%;overflow-wrap:anywhere}
+.page .card .gauge-side .detail{font-size:clamp(8px,2.7cqw,10px);line-height:1.25}
+.page .card .metric{font-size:clamp(16px,9cqw,39px);overflow-wrap:anywhere;line-height:1.05}
+.page .card .unit{font-size:clamp(9px,3.5cqw,13px)}
+.page .card .detail{overflow-wrap:anywhere;line-height:1.3}
+.page .card .quick,.page .card .tilegrid,.page .card .logi-devices{min-width:0;max-width:100%}
+.page .card .logi-devices{grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(3px,1.5cqw,8px)}
+.page .card .logi-device{min-width:0;padding:clamp(5px,2cqw,10px)}
+.page .card .logi-name{overflow-wrap:anywhere;font-size:clamp(8px,2.8cqw,11px)}
+.page .card .logi-sub{font-size:clamp(7px,2.3cqw,10px)}
+@container edgewidget (max-height:145px){
+ .gauge-wrap{flex-wrap:nowrap!important;gap:5px!important}
+ .gauge{width:min(64px,24cqw,48cqh)!important;height:min(64px,24cqw,48cqh)!important;flex-basis:min(64px,24cqw,48cqh)!important;min-width:34px!important;min-height:34px!important}
+ .gauge-side{flex:1 1 0!important}
+ .gauge-side .detail{font-size:8px!important}
+ .gauge-side .pill{display:none}
+}
+@container edgewidget (max-width:175px){
+ .gauge-wrap{flex-direction:column;justify-content:center;gap:4px!important}
+ .gauge-side{text-align:center;flex:0 1 auto!important}
+ .gauge-side .detail{display:none}
+ .gauge{width:min(58px,34cqw,43cqh)!important;height:min(58px,34cqw,43cqh)!important;flex-basis:min(58px,34cqw,43cqh)!important}
+}
+@media(max-width:700px){
+ .page .card{padding:clamp(7px,2vw,11px)}
+ .page .card .gauge-wrap{gap:5px}
+ .page .card .logi-devices{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+
+/* =====================================================
+   PROJECT EDGE — PREMIUM VISUAL EVOLUTION 1.0
+   Couche graphique globale — sans modification du JS
+   ===================================================== */
+
+:root {
+  --bg: #070b12;
+  --panel: #0d1928;
+  --panel2: #12263a;
+  --line: #254963;
+  --blue: #20c5ff;
+  --cyan: #8cecff;
+  --orange: #ff873f;
+  --gold: #ffd09a;
+  --text: #f3f8ff;
+  --muted: #91a8bb;
+  --green: #61edb7;
+}
+
+/* Fond général */
+html, body {
+  background:
+    radial-gradient(ellipse at 50% -20%, #12304a 0%, transparent 55%),
+    linear-gradient(145deg, #080e17, #05090f 75%);
+}
+
+/* Barre supérieure */
+.top {
+  border-bottom: 1px solid rgba(65, 160, 205, .28);
+  padding-bottom: 12px;
+}
+
+.brand {
+  text-shadow: 0 0 20px rgba(32, 197, 255, .25);
+}
+
+.logo {
+  box-shadow:
+    0 0 18px rgba(32, 197, 255, .35),
+    0 0 38px rgba(32, 197, 255, .12);
+}
+
+/* Navigation */
+.nav {
+  gap: 9px;
+}
+
+.nav button {
+  border-radius: 5px;
+  background: linear-gradient(145deg, #101e2d, #09121d);
+  transition: background .2s, border-color .2s, transform .2s;
+}
+
+.nav button:hover {
+  background: linear-gradient(145deg, #173650, #102033);
+  transform: translateY(-2px);
+}
+
+.nav button.active {
+  background: linear-gradient(120deg, #16415d, #102337);
+  box-shadow:
+    inset 0 -2px var(--orange),
+    0 4px 18px rgba(25, 186, 255, .12);
+}
+
+/* Titres de pages */
+.heading h1 {
+  text-shadow: 0 0 28px rgba(32, 197, 255, .18);
+  letter-spacing: .045em;
+}
+
+.eyebrow {
+  text-shadow: 0 0 12px rgba(255, 122, 50, .2);
+}
+
+/* Cartes et widgets */
+.card {
+  border-radius: 7px;
+  border: 1px solid rgba(57, 112, 148, .48);
+  background:
+    linear-gradient(145deg,
+      rgba(19, 42, 63, .97),
+      rgba(8, 17, 29, .98));
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, .28),
+    inset 0 1px rgba(255, 255, 255, .045);
+  transition:
+    border-color .22s ease,
+    box-shadow .22s ease,
+    background .22s ease;
+}
+
+.card:hover {
+  border-color: rgba(64, 188, 235, .65);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, .34),
+    0 0 18px rgba(25, 186, 255, .07),
+    inset 0 1px rgba(255, 255, 255, .07);
+}
+
+.card:before {
+  width: 54px;
+  height: 2px;
+  box-shadow: 0 0 14px var(--widget-accent, var(--orange));
+}
+
+/* Textes et valeurs */
+.metric-label {
+  color: #a5bed0;
+  letter-spacing: .15em;
+}
+
+.metric {
+  text-shadow: 0 0 22px rgba(32, 197, 255, .22);
+}
+
+.detail {
+  color: #91a8bb;
+}
+
+/* Jauges */
+.gauge {
+  box-shadow:
+    0 0 20px rgba(25, 186, 255, .23),
+    0 0 42px rgba(25, 186, 255, .06);
+}
+
+.gauge:before {
+  border-color: rgba(89, 151, 185, .55);
+}
+
+/* Boutons */
+button {
+  border-radius: 5px;
+  transition:
+    filter .2s ease,
+    box-shadow .2s ease,
+    border-color .2s ease,
+    transform .2s ease;
+}
+
+button:hover {
+  box-shadow:
+    0 5px 18px rgba(25, 186, 255, .13);
+}
+
+/* Accès rapides */
+.quick button {
+  border-radius: 6px;
+  background: linear-gradient(145deg, #142c40, #0b1725);
+  border: 1px solid rgba(52, 115, 151, .48);
+}
+
+.quick button:hover {
+  border-color: var(--cyan);
+  background: linear-gradient(145deg, #1a3c55, #102438);
+}
+
+.quick b {
+  text-shadow: 0 0 17px rgba(123, 234, 255, .65);
+}
+
+/* Fenêtres et panneaux */
+.editor-panel,
+.library-panel,
+.pagecreator-panel {
+  border-radius: 9px;
+  border-color: rgba(58, 166, 211, .7);
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, .6),
+    0 0 35px rgba(25, 186, 255, .1);
+}
+
+/* Pied de page */
+.footer {
+  border-top: 1px solid rgba(65, 130, 165, .15);
+  padding-top: 7px;
+}
+
+/* Accessibilité et interactions */
+button:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+/* Adaptation petits écrans */
+@media (max-width: 700px) {
+  .card {
+    border-radius: 6px;
+  }
+
+  .nav {
+    gap: 6px;
+  }
+
+  .nav button {
+    border-radius: 4px;
+  }
+}
+
+
+
+/* =====================================================
+   PROJECT EDGE — DESIGN EVOLUTION 1.1
+   Refonte visuelle globale, sans changement du JavaScript
+   ===================================================== */
+:root{
+  --bg:#060b13;--panel:#0c1928;--panel2:#12283d;--line:#294c66;
+  --blue:#22c8ff;--cyan:#9beeff;--orange:#ff8a42;--gold:#ffd19b;
+  --text:#f4f9ff;--muted:#9aafc1;--green:#61efb6;--red:#ff536c;
+}
+html,body{
+  background:#060b13;
+  background-image:radial-gradient(ellipse at 18% 0%,rgba(16,103,151,.24),transparent 38%),radial-gradient(ellipse at 88% 80%,rgba(255,122,50,.07),transparent 34%),linear-gradient(145deg,#091321 0%,#050910 72%);
+}
+body:before{opacity:.28;background-size:42px 42px;mask-image:linear-gradient(to bottom,#000,transparent 76%)}
+body:after{opacity:.55}
+.app{gap:13px}
+.top{
+  min-height:54px;padding:5px 2px 13px;
+  border-bottom:1px solid rgba(91,174,215,.25);
+  box-shadow:0 8px 24px -22px var(--blue);
+}
+.brand{font-size:clamp(15px,2.1vw,21px);letter-spacing:.22em}
+.logo{
+  width:40px;height:40px;border-radius:9px;clip-path:polygon(16% 0,100% 0,84% 100%,0 100%);
+  box-shadow:0 0 20px rgba(34,200,255,.42),0 0 48px rgba(34,200,255,.14);
+}
+.status{padding:7px 11px;border:1px solid rgba(97,239,182,.2);border-radius:30px;background:rgba(28,117,91,.10);font-size:9px}
+.clock{font-weight:800;text-shadow:0 0 14px rgba(155,238,255,.35)}
+.nav{gap:9px;padding:2px 1px 5px}
+.nav button{
+  border-radius:7px;clip-path:none;padding:11px 16px;
+  border:1px solid rgba(66,119,151,.38);
+  background:linear-gradient(180deg,rgba(21,43,63,.92),rgba(9,20,32,.96));
+  color:#a9c1d3;font-weight:800;letter-spacing:.12em;
+}
+.nav button.active{
+  color:#fff;border-color:rgba(34,200,255,.78);
+  background:linear-gradient(135deg,rgba(20,83,119,.96),rgba(12,35,55,.98));
+  box-shadow:inset 0 0 0 1px rgba(155,238,255,.08),0 5px 22px rgba(34,200,255,.13);
+}
+.heading{margin:8px 0 19px;align-items:center}
+.heading:after{bottom:-10px;height:2px;width:min(340px,42vw);background:linear-gradient(90deg,var(--orange),var(--blue),rgba(34,200,255,0))}
+.eyebrow{font-size:9px;letter-spacing:.3em}
+.heading h1{font-size:clamp(26px,4.8vw,43px);font-weight:900;letter-spacing:.035em;text-shadow:0 5px 24px rgba(0,0,0,.4),0 0 25px rgba(34,200,255,.22)}
+.sub{padding:7px 10px;border:1px solid rgba(74,130,162,.24);border-radius:5px;background:rgba(12,30,46,.58);font-size:9px}
+.grid{gap:12px}
+.card{
+  padding:16px;border-radius:10px;
+  border:1px solid rgba(68,119,151,.42);
+  background:linear-gradient(145deg,rgba(19,43,64,.97) 0%,rgba(11,25,40,.98) 52%,rgba(7,16,27,.99) 100%);
+  box-shadow:0 12px 30px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.055),inset 0 -1px rgba(0,0,0,.25);
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
+}
+.card:before{left:16px;top:0;width:68px;height:3px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,var(--widget-accent,var(--orange)),rgba(34,200,255,.75));box-shadow:0 0 15px var(--widget-accent,var(--orange))}
+.card:after{right:-30px;top:-30px;width:76px;height:76px;border-color:rgba(67,157,199,.16);opacity:.8}
+.card:hover{transform:translateY(-2px);border-color:rgba(77,190,232,.65);box-shadow:0 16px 34px rgba(0,0,0,.34),0 0 22px rgba(34,200,255,.09),inset 0 1px rgba(255,255,255,.07)}
+.metric-label{color:#b2c8d8;font-size:9px;letter-spacing:.19em}
+.metric{font-size:clamp(27px,4.5vw,43px);font-weight:900;text-shadow:0 0 22px rgba(34,200,255,.2)}
+.unit{color:#9beeff}
+.detail{color:#9aafc1;line-height:1.45}
+.panel-title{font-size:10px;letter-spacing:.22em;color:var(--gold);padding-bottom:9px;border-bottom:1px solid rgba(86,145,177,.17)}
+.gauge{width:100px;height:100px;flex-basis:100px;box-shadow:0 0 22px rgba(34,200,255,.25),0 0 48px rgba(34,200,255,.08)}
+.gauge:before{inset:8px;background:radial-gradient(circle at 35% 25%,#1b3b53,#07111d 75%);border:1px solid rgba(111,177,207,.48)}
+.gauge-value{font-size:26px}
+.bar{height:7px;border-radius:8px;background:#1a3043;clip-path:none}
+.bar i{border-radius:8px}
+.quick{gap:11px}
+.quick button,.tile{
+  clip-path:none;border-radius:8px;
+  border:1px solid rgba(65,125,159,.42);
+  background:linear-gradient(145deg,rgba(22,49,72,.96),rgba(10,23,37,.98));
+  box-shadow:0 7px 18px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.045);
+}
+.quick button{min-height:78px}
+.quick b,.tile .ico{filter:drop-shadow(0 0 8px rgba(34,200,255,.35))}
+.tile{padding:15px;min-height:116px}
+.tile:hover,.quick button:hover{transform:translateY(-2px);border-color:rgba(155,238,255,.72);background:linear-gradient(145deg,#1b4562,#10263b)}
+.tile strong{font-size:11px;letter-spacing:.08em}
+.tile small{line-height:1.4}
+.pill{border-radius:20px;background:rgba(20,108,145,.12);border-color:rgba(70,178,218,.38);padding:5px 10px}
+.rowitem{border-bottom-color:rgba(76,126,155,.22)}
+button{clip-path:none;border-radius:7px}
+button:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.edit-mode-btn{border-radius:6px}
+.editor-toolbar{border-radius:8px;background:rgba(10,26,41,.94)}
+.editor-panel,.library-panel,.pagecreator-panel{border-radius:12px;background:linear-gradient(145deg,#142d43,#081421)}
+.logi-device{border-radius:7px;border-color:rgba(68,133,168,.42);background:linear-gradient(145deg,rgba(24,49,70,.75),rgba(8,19,31,.85))}
+.footer{border-top:1px solid rgba(76,126,155,.16);padding-top:8px}
+@media(max-width:700px){
+ .app{gap:9px}.top{min-height:43px;padding-bottom:8px}.logo{width:32px;height:32px}
+ .nav{gap:6px}.nav button{padding:9px 11px;font-size:9px}
+ .heading{margin:4px 0 16px}.heading h1{font-size:clamp(23px,6vw,32px)}
+ .grid{gap:8px}.card{padding:12px;border-radius:8px}
+ .gauge{width:min(88px,27cqw,58cqh);height:min(88px,27cqw,58cqh);flex-basis:min(88px,27cqw,58cqh)}
+ .quick{gap:7px}.quick button{min-height:66px}.tile{min-height:100px;padding:11px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+
+
+/* =========================================================
+   PROJECT EDGE — RECONSTRUCTION MOBILE LANDSCAPE
+   Écran fixe, 4 colonnes × 2 lignes, widgets redimensionnables
+   ========================================================= */
+html,body{width:100%;height:100%;overflow:hidden}
+body:before,body:after{pointer-events:none}
+.app{width:100%;height:100dvh;max-width:none;margin:0;padding:7px 10px 9px;gap:7px;overflow:hidden}
+.top{flex:0 0 43px;min-height:43px;height:43px;padding:0 2px 6px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.top .nav{flex:1;min-width:0;display:flex;align-items:center;gap:6px;overflow-x:auto;overflow-y:hidden;padding:0 0 2px}
+.top .nav button{flex:0 0 auto;padding:8px 13px;font-size:clamp(9px,1.8vw,12px);letter-spacing:.08em}
+.top-right{display:flex;align-items:center;gap:9px;flex:0 0 auto}
+/* Voyant PC : point seul, bleu clair connecté / rouge déconnecté */
+.top-right .status{display:block;width:9px;height:9px;flex:0 0 9px;padding:0;margin:0;border:0;border-radius:50%;background:var(--cyan);color:var(--cyan);font-size:0;line-height:0;box-shadow:0 0 9px currentColor;text-shadow:none}
+.top-right .status.disconnected{background:var(--red);color:var(--red);border:0;box-shadow:0 0 9px currentColor}
+.top-right .clock{font-size:clamp(13px,2.3vw,18px);font-weight:900;letter-spacing:.04em;min-width:48px;text-align:right}
+.top-right .floating-edit{position:static;display:grid;place-items:center;align-content:center;width:29px;height:29px;min-width:29px;flex:0 0 29px;padding:0;margin:0;border-radius:7px;opacity:.9;font-size:18px;font-weight:700;line-height:1;white-space:nowrap;overflow:hidden;text-align:center;text-indent:0;clip-path:none;background:#10283c;border:1px solid #39718e;box-shadow:none}
+.top-right .floating-edit:hover,.top-right .floating-edit:active{opacity:1;border-color:var(--cyan)}
+#main{flex:1 1 auto;min-height:0;height:auto;overflow:hidden;position:relative}
+.page{display:none;width:100%;height:100%;min-height:0;overflow:hidden;animation:none}
+.page.active{display:block}
+.page>.heading{display:none!important}
+.page .grid{width:100%;height:100%;min-height:0;max-height:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));grid-auto-flow:row dense;gap:8px;align-items:stretch;overflow:hidden;padding:1px}
+.page .grid>.card{grid-column:span var(--widget-cols,1)!important;grid-row:span var(--widget-rows,1)!important;min-width:0;min-height:0;width:auto;height:auto;max-width:100%;max-height:100%;padding:clamp(7px,1.1vw,13px);overflow:hidden;border-radius:9px;container-type:size;position:relative}
+.page .grid>.card.wide,.page .grid>.card.full{grid-column:span var(--widget-cols,1)!important}
+.page .grid>.card>*{min-width:0;max-width:100%}
+.page .grid>.card .metric-label,.page .grid>.card .panel-title{font-size:clamp(8px,1.15vw,11px);line-height:1.2;margin-bottom:5px}
+.page .grid>.card .metric{font-size:clamp(17px,3vw,30px);line-height:1.05;margin:5px 0}
+.page .grid>.card .detail{font-size:clamp(8px,1.1vw,10px);line-height:1.25}
+.page .grid>.card .gauge-wrap{gap:5px;margin-top:5px;min-height:0;overflow:hidden;flex-wrap:nowrap}
+.page .grid>.card .gauge{width:min(72px,43cqh,24cqw);height:min(72px,43cqh,24cqw);flex:0 1 min(72px,43cqh,24cqw);min-width:30px;min-height:30px}
+.page .grid>.card .gauge-value{font-size:clamp(12px,4cqw,21px)}
+.page .grid>.card .gauge-side{flex:1 1 0;min-width:0}
+.page .grid>.card .pill{font-size:7px;padding:3px 5px}
+.page .grid>.card .quick{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.page .grid>.card .quick button{min-height:0;height:100%;padding:5px 3px;font-size:8px;gap:2px}
+.page .grid>.card .quick b{font-size:15px}
+.page .grid>.card .tilegrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;min-height:0}
+.page .grid>.card .tile{min-height:0;padding:7px;gap:3px}
+.page .grid>.card .tile .ico{font-size:17px}
+.page .grid>.card .tile strong{font-size:8px}
+.page .grid>.card .tile small{font-size:7px}
+.page .grid>.card .list{gap:2px}
+.page .grid>.card .rowitem{padding:4px 0;font-size:8px}
+.page .grid>.card .logi-devices{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+.page .grid>.card .logi-device{min-height:0;padding:5px;overflow:hidden}
+.page .grid>.card .logi-name{font-size:clamp(7px,1vw,9px);overflow-wrap:anywhere}
+.page .grid>.card .logi-sub{font-size:7px}
+.page .grid>.card .logi-value{font-size:16px}
+.page .grid>.card .logi-icon{font-size:14px}
+.page .grid>.card .logi-foot{font-size:7px;line-height:1.15}
+.footer{display:none!important}
+.floating-edit{position:static}
+.editor-toolbar{position:fixed;z-index:14;left:8px;right:45px;bottom:7px;display:none;flex-wrap:nowrap;overflow-x:auto;padding:5px;gap:5px;background:rgba(5,14,24,.96);backdrop-filter:blur(8px)}
+body.editing .editor-toolbar{display:flex!important}
+.editor-toolbar button{flex:0 0 auto;padding:6px 8px;font-size:8px}
+.editor-hint{display:none}
+body.editing .page .grid{outline:1px dashed rgba(80,180,220,.25);outline-offset:-1px}
+body.editing .page .grid>.card{cursor:default;outline:1px solid rgba(34,200,255,.28)}
+body.editing .page .grid>.card .widget-tools{display:flex;top:4px;right:4px;gap:3px}
+.widget-tools button{font-size:9px!important;padding:3px 6px!important;min-width:22px}
+.resize-handle{display:none;position:absolute;z-index:8;background:var(--cyan);opacity:.8;touch-action:none}
+body.editing .resize-handle{display:block}
+.resize-handle.e,.resize-handle.w{top:22%;bottom:22%;width:7px;cursor:ew-resize;border-radius:8px}
+.resize-handle.e{right:0}.resize-handle.w{left:0}
+.resize-handle.n,.resize-handle.s{left:22%;right:22%;height:7px;cursor:ns-resize;border-radius:8px}
+.resize-handle.n{top:0}.resize-handle.s{bottom:0}
+.resize-handle.ne,.resize-handle.nw,.resize-handle.se,.resize-handle.sw{width:13px;height:13px;border-radius:50%}
+.resize-handle.ne{right:0;top:0;cursor:nesw-resize}
+.resize-handle.nw{left:0;top:0;cursor:nwse-resize}
+.resize-handle.se{right:0;bottom:0;cursor:nwse-resize}
+.resize-handle.sw{left:0;bottom:0;cursor:nesw-resize}
+body.editing .page .grid>.card{touch-action:pan-y}
+body.editing .page .grid>.card .resize-handle{touch-action:none}
+body.editing .page .grid>.card .widget-tools{z-index:10}
+@media(max-height:390px){
+ .app{padding:5px 7px 6px;gap:5px}.top{flex-basis:37px;height:37px;min-height:37px}
+ #main{height:calc(100dvh - 48px)}
+ .page .grid{gap:5px}
+ .page .grid>.card{padding:6px}
+ .top .nav button{padding:6px 9px}
+}
+@media(max-width:520px){
+ .top .nav{gap:4px}.top .nav button{padding:7px 8px;font-size:8px}
+ .top-right{gap:7px}.top-right .status{width:8px;height:8px;flex-basis:8px;padding:0}
+ .page .grid{gap:5px}
+}
+
+
+/* V2.0.8 — Boutons statiques : surbrillance sans déplacement */
+button,
+button:hover,
+button:focus,
+button:focus-visible,
+button:active {
+  transform: none !important;
+}
+button {
+  transition: background-color .18s ease, background-image .18s ease,
+             border-color .18s ease, box-shadow .18s ease,
+             color .18s ease, filter .18s ease !important;
+}
+button:hover {
+  border-color: var(--cyan) !important;
+  background-image: linear-gradient(135deg, rgba(30,105,145,.58), rgba(13,35,53,.98)) !important;
+  filter: brightness(1.22) !important;
+  box-shadow: 0 0 0 1px rgba(123,234,255,.16),
+              0 0 18px rgba(25,186,255,.24),
+              inset 0 0 14px rgba(123,234,255,.08) !important;
+}
+button:active {
+  border-color: var(--orange) !important;
+  background-image: linear-gradient(135deg, rgba(119,65,35,.62), rgba(25,35,47,.98)) !important;
+  filter: brightness(1.12) !important;
+  box-shadow: 0 0 0 1px rgba(255,135,63,.28),
+              0 0 15px rgba(255,135,63,.18),
+              inset 0 0 12px rgba(255,135,63,.08) !important;
+}
+button:focus-visible {
+  outline: 2px solid var(--cyan) !important;
+  outline-offset: 2px;
+}
+/* Les boutons de navigation gardent leur état sélectionné, sans mouvement. */
+.nav button:hover,
+.quick button:hover,
+.tile:hover,
+.tilegrid button:hover {
+  transform: none !important;
+}
+
+
+/* V2.0.8 — Les widgets restent visuellement immobiles au survol.
+   Seuls leurs propres boutons interactifs conservent la surbrillance. */
+.page .card,
+.page .card:hover {
+  transform: none !important;
+  border-color: rgba(68,119,151,.42) !important;
+  background: linear-gradient(145deg,rgba(19,43,64,.97) 0%,rgba(11,25,40,.98) 52%,rgba(7,16,27,.99) 100%) !important;
+  box-shadow: 0 12px 30px rgba(0,0,0,.28),
+              inset 0 1px rgba(255,255,255,.055),
+              inset 0 -1px rgba(0,0,0,.25) !important;
+}
+.page .card {
+  transition: none !important;
+}
+/* Les boutons présents dans un widget gardent leur effet de survol. */
+.page .card button:hover {
+  border-color: var(--cyan) !important;
+  filter: brightness(1.22) !important;
+  box-shadow: 0 0 0 1px rgba(123,234,255,.16),
+              0 0 18px rgba(25,186,255,.24),
+              inset 0 0 14px rgba(123,234,255,.08) !important;
+}
+
+
+/* V2.0.8 — Grille d'édition calquée sur la structure réelle : 4 colonnes × 2 lignes */
+body.editing .page .grid {
+  /* Le quadrillage représente les 8 cellules réelles, pas une grille de placement fine. */
+  background-color: rgba(7,20,32,.38) !important;
+  background-image:
+    linear-gradient(to right, rgba(66,190,235,.34) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(66,190,235,.34) 1px, transparent 1px) !important;
+  /* Espacement entre lignes de grille = largeur/hauteur d'une cellule + le gap CSS. */
+  background-size:
+    calc((100% + 6px) / 4) calc((100% + 6px) / 2) !important;
+  background-position: 0 0 !important;
+  background-repeat: repeat !important;
+  border: 1px solid rgba(66,190,235,.30) !important;
+  outline: none !important;
+  outline-offset: 0 !important;
+}
+body.editing .page .grid > .card {
+  outline: 1px solid rgba(34,200,255,.42) !important;
+  outline-offset: -1px !important;
+}
+/* Pas d'ancienne grille verticale à 10+ rangées sur les petits écrans. */
+@media(max-width:700px) {
+  body.editing .page .grid {
+    background-size:
+      calc((100% + 6px) / 4) calc((100% + 6px) / 2) !important;
+  }
+}
+
+
+/* V2.0.8 — Déplacement tactile des widgets, y compris entre fenêtres */
+body.editing .page .card { cursor: grab; }
+body.editing .page .card.widget-moving { opacity: .38 !important; outline: 2px dashed var(--cyan) !important; cursor: grabbing; }
+body.editing .nav button.widget-drop-page { border-color: var(--orange) !important; box-shadow: 0 0 0 2px rgba(255,135,63,.25), 0 0 18px rgba(255,135,63,.22) !important; }
+body.widget-dragging, body.widget-dragging * { user-select:none !important; -webkit-user-select:none !important; }
+
+
+/* V2.0.8 — Grille d'édition réelle : 4 colonnes × 2 rangées de même hauteur */
+body.editing .page .grid {
+  display:grid !important;
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  grid-template-rows:repeat(2,minmax(150px,1fr)) !important;
+  grid-auto-rows:minmax(150px,1fr) !important;
+  grid-auto-flow:row !important;
+  min-height:306px !important;
+  gap:6px !important;
+  align-content:stretch !important;
+}
+@media(max-height:480px) and (orientation:landscape) {
+  body.editing .page .grid {
+    grid-template-rows:repeat(2,minmax(110px,1fr)) !important;
+    grid-auto-rows:minmax(110px,1fr) !important;
+    min-height:226px !important;
+  }
+}
+
+
+.widget-moving{pointer-events:none!important;opacity:.55;z-index:9999!important;outline:2px dashed var(--cyan);}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <nav class="nav" aria-label="Navigation">
+    <button class="active" data-page="command">COMMAND</button>
+    <button data-page="gaming">GAMING</button>
+    <button data-page="space">SPACE DICE</button>
+    <button data-page="tools">OUTILS</button>
+  </nav>
+  <div class="top-right">
+    <div class="status disconnected" id="connectionStatus" aria-label="État de connexion" title="PC non connecté">●</div>
+    <div class="clock" id="clock">--:--</div>
+    <button type="button" id="editModeBtn" class="floating-edit" onclick="toggleEditMode()" aria-label="Activer le mode édition" title="Activer le mode édition">⚙</button>
+  </div>
+</header>
+<div class="editor-toolbar" id="editorToolbar">
+  <button onclick="addPage()">＋ NOUVELLE PAGE</button>
+  <button onclick="renameCurrentPage()">✎ RENOMMER</button>
+  <button onclick="addWidget()">▦ AJOUTER WIDGET</button>
+  <button onclick="resetLayout()">↺ RÉINITIALISER</button>
+  <span class="editor-hint">MODE ÉDITION · Redimensionne avec les bords</span>
+</div>
+<main id="main">
+<section class="page active" id="command">
+ <div class="heading"><div><div class="eyebrow">TACTICAL SYSTEMS · LIVE FEED</div><h1>Command Center</h1></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end"><div class="sub">PERFORMANCE MONITOR // 01</div></div></div>
+ <div class="grid">
+  <article class="card"><div class="metric-label">Processeur · CPU</div><div class="gauge-wrap"><div class="gauge" id="cpuGauge" style="--p:24"><div class="gauge-value"><span id="cpu">24</span><small>%</small></div></div><div class="gauge-side"><div class="metric-label">CHARGE</div><div class="detail">Utilisation<br>processeur</div><span class="pill">LIVE DEMO</span></div></div></article>
+  <article class="card"><div class="metric-label">Carte graphique · GPU</div><div class="gauge-wrap"><div class="gauge" id="gpuGauge" style="--p:38"><div class="gauge-value"><span id="gpu">38</span><small>%</small></div></div><div class="gauge-side"><div class="metric-label">CHARGE</div><div class="detail">Utilisation<br>graphique</div><span class="pill">LIVE DEMO</span></div></div></article>
+  <article class="card"><div class="metric-label">Température CPU</div><div class="metric"><span id="ctemp">46</span><span class="unit"> °C</span></div><div class="detail">Capteur simulé</div></article>
+  <article class="card"><div class="metric-label">Température GPU</div><div class="metric"><span id="gtemp">51</span><span class="unit"> °C</span></div><div class="detail">Capteur simulé</div></article>
+  <article class="card wide"><div class="metric-label">Mémoire vive · RAM</div><div class="gauge-wrap" style="justify-content:flex-start"><div class="gauge ram" id="ramGauge" style="--p:57"><div class="gauge-value"><span id="ramPct">57</span><small>%</small></div></div><div class="gauge-side"><div class="metric" style="font-size:25px;margin:2px 0"><span id="ram">18.4</span><span class="unit"> / 32 Go</span></div><div class="detail">Mémoire utilisée · simulation</div><div class="detail" style="margin-top:5px;color:var(--gold)">RAM CAPACITY</div></div></div></article>
+  <article class="card wide"><div class="metric-label">Réseau local</div><div class="metric" style="font-size:23px">CONNECTÉ</div><div class="detail">Ethernet · Wi-Fi · LAN</div><div style="margin-top:10px"><span class="pill">MODE DÉMO</span></div></article>
+  <article class="card full"><h3 class="panel-title">Accès rapides</h3><div class="quick">
+   <button onclick="notify('Discord : raccourci à configurer')"><b>◉</b>Discord</button>
+   <button onclick="notify('Navigateur : raccourci à configurer')"><b>⌘</b>Web</button>
+   <button onclick="notify('Explorateur : raccourci à configurer')"><b>▤</b>Fichiers</button>
+   <button onclick="notify('Contrôle audio à connecter au PC')"><b>♫</b>Audio</button>
+  </div></article>
+ </div>
+</section>
+<section class="page" id="gaming">
+ <div class="heading"><div><div class="eyebrow">ESPACE GAMING</div><h1>Gaming Deck</h1></div><div class="sub">OUTILS & RACCOURCIS</div></div>
+ <div class="grid">
+  <article class="card wide"><h3 class="panel-title">Session de jeu</h3><div class="metric" style="font-size:25px">READY <span class="unit">/ EN ATTENTE</span></div><div class="detail">Les intégrations de jeux seront ajoutées ensuite.</div></article>
+  <article class="card wide"><h3 class="panel-title">Performance</h3><div class="metric" style="font-size:25px">— FPS</div><div class="detail">Compteur réel à connecter au PC.</div></article>
+  <article class="card full"><h3 class="panel-title">Lanceurs rapides</h3><div class="tilegrid">
+   <button class="tile" onclick="notify('Raccourci World of Warcraft à configurer')"><span class="ico">⚔</span><strong>World of Warcraft</strong><small>Lancer le jeu</small></button>
+   <button class="tile" onclick="notify('Raccourci Discord à configurer')"><span class="ico">◉</span><strong>Discord</strong><small>Communication</small></button>
+   <button class="tile" onclick="notify('Raccourci Steam à configurer')"><span class="ico">◈</span><strong>Steam</strong><small>Bibliothèque</small></button>
+   <button class="tile" onclick="notify('Raccourci navigateur à configurer')"><span class="ico">◎</span><strong>Navigateur</strong><small>Ouvrir le web</small></button>
+  </div></article>
+  <article class="card full"><h3 class="panel-title">État de la session</h3><div class="list"><div class="rowitem"><span>Mode d'affichage</span><span class="pill">PAYSAGE</span></div><div class="rowitem"><span>Connexion au PC</span><span class="pill">À CONFIGURER</span></div><div class="rowitem"><span>Source des données</span><span class="pill">SIMULATION</span></div></div></article>
+ </div>
+</section>
+<section class="page" id="space">
+ <div class="heading"><div><div class="eyebrow">CONSOLE DE PILOTAGE</div><h1>Space Dice Battle</h1></div><div class="sub">PROJECT MODULE</div></div>
+ <div class="grid">
+  <article class="card wide"><h3 class="panel-title">Accès au jeu</h3><div class="metric" style="font-size:22px">SPACE DICE</div><div class="detail">Portail du jeu et outils associés</div><button style="margin-top:14px;width:100%" onclick="window.open('https://space-dice-battle.onrender.com/','_blank')">Ouvrir Space Dice Battle ↗</button></article>
+  <article class="card wide"><h3 class="panel-title">Serveur</h3><div class="metric" style="font-size:22px;color:var(--green)">EN LIGNE*</div><div class="detail">*État indicatif, non vérifié en direct</div></article>
+  <article class="card full"><h3 class="panel-title">Console rapide</h3><div class="tilegrid">
+   <button class="tile" onclick="window.open('https://space-dice-battle.onrender.com/','_blank')"><span class="ico">✦</span><strong>Jouer</strong><small>Accéder au jeu</small></button>
+   <button class="tile" onclick="notify('Statut serveur : connexion API à développer')"><span class="ico">⌁</span><strong>Statut serveur</strong><small>Diagnostic</small></button>
+   <button class="tile" onclick="notify('Administration : module à développer')"><span class="ico">⚙</span><strong>Administration</strong><small>Outils futurs</small></button>
+  </div></article>
+ </div>
+</section>
+<section class="page" id="tools">
+ <div class="heading"><div><div class="eyebrow">COMMANDES PERSONNALISÉES</div><h1>Outils</h1></div><div class="sub">RACCOURCIS TACTILES</div></div>
+ <div class="grid">
+  <article class="card full"><h3 class="panel-title">Contrôles rapides · maquette</h3><div class="tilegrid">
+   <button class="tile" onclick="notify('Volume : contrôle Windows à connecter')"><span class="ico">🔊</span><strong>Volume</strong><small>Contrôle audio</small></button>
+   <button class="tile" onclick="notify('Lecture multimédia à connecter')"><span class="ico">▶</span><strong>Média</strong><small>Lecture / pause</small></button>
+   <button class="tile" onclick="notify('Capture écran : commande PC à connecter')"><span class="ico">▣</span><strong>Capture</strong><small>Capture écran</small></button>
+   <button class="tile" onclick="notify('Verrouillage : commande PC à connecter')"><span class="ico">⌑</span><strong>Verrouiller</strong><small>Session Windows</small></button>
+   <button class="tile" onclick="notify('Minuteur à développer')"><span class="ico">◷</span><strong>Minuteur</strong><small>Chronomètre</small></button>
+   <button class="tile" onclick="notify('Bouton personnalisable à définir')"><span class="ico">＋</span><strong>Personnaliser</strong><small>Ajouter une action</small></button>
+  </div></article>
+  <article class="card full"><h3 class="panel-title">À propos de cette version</h3><div class="list"><div class="rowitem"><span>Version</span><span>1.8 · Logitech Widget intégré</span></div><div class="rowitem"><span>Mode actuel</span><span class="pill">SIMULATION</span></div><div class="rowitem"><span>Connexion PC</span><span>Prochaine étape</span></div></div></article>
+ </div>
+</section>
+</main>
+<footer class="footer"><span><strong>EDGE</strong> SYSTEMS · TACTICAL CONTROL</span><span>V2.0.2 · BANDEAU AJUSTÉ</span></footer>
+</div>
+
+
+
+<div id="pageCreator" role="dialog" aria-modal="true" aria-label="Créer une page">
+ <div class="pagecreator-panel">
+  <h2>NOUVELLE PAGE</h2>
+  <p>Crée un nouvel espace, puis ajoute les widgets de ton choix.</p>
+  <input id="newPageName" maxlength="28" placeholder="Nom de la page" autocomplete="off">
+  <div class="pagecreator-actions">
+   <button type="button" onclick="closePageCreator()">ANNULER</button>
+   <button type="button" onclick="confirmCreatePage()">CRÉER LA PAGE</button>
+  </div>
+ </div>
+</div>
+
+<div id="widgetLibrary" role="dialog" aria-modal="true" aria-label="Bibliothèque de widgets">
+ <div class="library-panel">
+  <div class="library-head"><h2>BIBLIOTHÈQUE DE WIDGETS</h2><button onclick="closeWidgetLibrary()">✕</button></div>
+  <div class="hint">Choisis un module pour l'ajouter à la page active. Tu pourras ensuite le configurer.</div>
+  <div class="library-grid">
+   <button class="library-item" onclick="createWidget('metric')"><span class="lib-ico">◉</span><strong>INDICATEUR</strong><small>Valeur, unité et description</small></button>
+   <button class="library-item" onclick="createWidget('gauge')"><span class="lib-ico">◌</span><strong>JAUGE CIRCULAIRE</strong><small>Progression avec dégradé EDGE</small></button>
+   <button class="library-item" onclick="createWidget('note')"><span class="lib-ico">▤</span><strong>TEXTE / NOTE</strong><small>Bloc de texte libre</small></button>
+   <button class="library-item" onclick="createWidget('link')"><span class="lib-ico">↗</span><strong>RACCOURCI</strong><small>Ouvrir un site ou une application web</small></button>
+   <button class="library-item" onclick="createWidget('clock')"><span class="lib-ico">◷</span><strong>HORLOGE</strong><small>Heure locale en direct</small></button>
+   <button class="library-item" onclick="createWidget('status')"><span class="lib-ico">⌁</span><strong>ÉTAT SYSTÈME</strong><small>Badge de statut personnalisable</small></button>
+   <button class="library-item" onclick="createWidget('logitech')"><span class="lib-ico">⌖</span><strong>LOGITECH CONTROL</strong><small>Batteries et connexion des périphériques</small></button>
+  </div>
+ </div>
+</div>
+
+<div id="widgetEditor" role="dialog" aria-modal="true" aria-label="Modifier le widget">
+ <div class="editor-panel">
+  <h2>CONFIGURATION DU WIDGET</h2>
+  <div class="hint">Modifie son apparence et sa disposition. Les changements sont sauvegardés localement.</div>
+  <div class="editor-field"><label for="weTitle">TITRE</label><input id="weTitle" maxlength="48"></div>
+  <div class="editor-field"><label for="weText">CONTENU / DESCRIPTION</label><textarea id="weText" maxlength="500"></textarea></div>
+  <div class="editor-field"><label for="weAccent">COULEUR D'ACCENT</label><select id="weAccent"><option value="default">Bleu / orange EDGE</option><option value="blue">Bleu électrique</option><option value="orange">Orange tactique</option><option value="green">Vert système</option><option value="gold">Or</option></select></div>
+  <div class="editor-field"><label for="weWidth">LARGEUR (COLONNES)</label><select id="weWidth"><option value="1">1 colonne</option><option value="2">2 colonnes</option><option value="4">4 colonnes</option></select></div><div class="editor-field"><label for="weHeight">HAUTEUR (UNITÉS)</label><select id="weHeight"><option value="1">1 ligne</option><option value="2">2 lignes</option></select></div>
+  <div class="editor-actions"><button type="button" onclick="closeWidgetEditor()">ANNULER</button><button type="button" onclick="applyWidgetEditor()">ENREGISTRER</button></div>
+ </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+
+const main=document.getElementById('main');
+const navEl=document.querySelector('.nav');
+let pages=[...document.querySelectorAll('.page')];
+let nav=[...navEl.querySelectorAll('button')];
+let currentPage=pages[0]?.id || 'command';
+let editMode=false;
+let dragCard=null;
+let editingCard=null;
+let pendingWidgetSize='';
+let widgetDragState=null;
+
+function refreshRefs(){
+  pages=[...document.querySelectorAll('.page')];
+  nav=[...navEl.querySelectorAll('button')];
+}
+function showPage(id){
+  currentPage=id;
+  refreshRefs();
+  pages.forEach(p=>p.classList.toggle('active',p.id===id));
+  nav.forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+  main.scrollTop=0;
+  if(editMode) decorateCards();
+}
+function notify(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(window.toastTimer);
+  window.toastTimer=setTimeout(()=>t.classList.remove('show'),2300);
+}
+function toggleEditMode(){
+  editMode=!editMode;
+  document.body.classList.toggle('editing',editMode);
+  const btn=document.getElementById('editModeBtn');
+  btn.textContent=editMode?'×':'⚙';
+  btn.setAttribute('aria-label',editMode?'Fermer le mode édition':'Activer le mode édition');
+  btn.title=editMode?'Fermer le mode édition':'Activer le mode édition';
+  btn.style.borderColor=editMode?'var(--orange)':'';
+  document.getElementById('editorToolbar').style.display=editMode?'flex':'none';
+  decorateCards();
+  if(editMode) notify('Mode édition · glisse un widget vers une zone libre');
+  else {document.querySelectorAll('.drop-slot').forEach(x=>x.remove());saveWorkspace();notify('Disposition enregistrée sur cet appareil');}
+}
+function normalizeGridLayout(grid){
+  // Réorganise les widgets dans l'ordre du DOM, en respectant leurs dimensions.
+  // La grille est limitée à 4 colonnes x 2 lignes.
+  const cards=[...grid.querySelectorAll(':scope > .card')];
+  const occupied=new Set();
+  const placements=[];
+  const fits=(x,y,w,h)=>{
+    if(x<1||y<1||x+w>5||y+h>3)return false;
+    for(let yy=y;yy<y+h;yy++)for(let xx=x;xx<x+w;xx++)if(occupied.has(`${xx}:${yy}`))return false;
+    return true;
+  };
+  for(const card of cards){
+    let w=Math.max(1,Math.min(4,parseInt(card.dataset.cols)||1));
+    let h=Math.max(1,Math.min(2,parseInt(card.dataset.rows)||1));
+    let found=null;
+    for(let y=1;y<=3-h&&!found;y++){
+      for(let x=1;x<=5-w;x++){
+        if(fits(x,y,w,h)){found={x,y};break;}
+      }
+    }
+    // Si l'ensemble ne tient plus, on ne masque jamais silencieusement le widget.
+    if(!found){
+      card.dataset.layoutOverflow='true';
+      return false;
+    }
+    card.dataset.layoutOverflow='';
+    placements.push({card,x:found.x,y:found.y,w,h});
+    for(let yy=found.y;yy<found.y+h;yy++)for(let xx=found.x;xx<found.x+w;xx++)occupied.add(`${xx}:${yy}`);
+  }
+  placements.forEach(({card,x,y,w,h})=>{
+    card.style.display='';
+    card.style.gridColumn=`${x} / span ${w}`;
+    card.style.gridRow=`${y} / span ${h}`;
+    card.dataset.cols=String(w);card.dataset.rows=String(h);
+    card.style.setProperty('--widget-cols',w);card.style.setProperty('--widget-rows',h);
+  });
+  return true;
+}
+function moveWidgetBefore(grid, dragged, target, after=false){
+  if(!grid||!dragged||!target||dragged===target)return false;
+  const oldParent=dragged.parentElement;
+  const oldNext=dragged.nextElementSibling;
+  if(after)target.after(dragged);else target.before(dragged);
+  if(!normalizeGridLayout(grid)){
+    // Annule le déplacement si les dimensions ne permettent pas de tout faire tenir.
+    if(oldParent){
+      if(oldNext&&oldNext.parentElement===oldParent)oldParent.insertBefore(dragged,oldNext);
+      else oldParent.appendChild(dragged);
+      normalizeGridLayout(grid);
+    }
+    return false;
+  }
+  return true;
+}
+function decorateCards(){
+  document.querySelectorAll('.page .grid').forEach(grid=>{
+    grid.querySelectorAll('.drop-slot').forEach(x=>x.remove());
+  });
+  document.querySelectorAll('.page .grid').forEach(grid=>normalizeGridLayout(grid));
+  document.querySelectorAll('.page .grid>.card').forEach(card=>{
+    if(!card.dataset.cols)card.dataset.cols='1';
+    if(!card.dataset.rows)card.dataset.rows='1';
+    card.style.setProperty('--widget-cols',card.dataset.cols);
+    card.style.setProperty('--widget-rows',card.dataset.rows);
+    card.style.gridColumn=`span ${card.dataset.cols}`;
+    card.style.gridRow=`span ${card.dataset.rows}`;
+    if(!card.querySelector('.widget-tools')){
+      const tools=document.createElement('div');tools.className='widget-tools';
+      tools.innerHTML='<button type="button" title="Modifier" data-action="edit">✎</button><button type="button" title="Supprimer" data-action="delete">×</button>';
+      card.appendChild(tools);
+    }
+    card.querySelectorAll('.widget-tools button').forEach(b=>b.onclick=e=>{
+      e.stopPropagation();
+      if(b.dataset.action==='delete'){
+        if(confirm('Supprimer ce widget ?')){card.remove();saveWorkspace();decorateCards();}
+      }else openWidgetEditor(card);
+    });
+    if(!card.querySelector('.resize-handle')){
+      ['n','s','e','w','ne','nw','se','sw'].forEach(dir=>{
+        const h=document.createElement('span');h.className='resize-handle '+dir;h.dataset.resize=dir;h.setAttribute('aria-label','Redimensionner');card.appendChild(h);
+      });
+    }
+    card.querySelectorAll('.resize-handle').forEach(handle=>{
+      handle.onpointerdown=e=>startWidgetResize(e,card,handle.dataset.resize);
+    });
+    bindWidgetMove(card);
+  });
+}
+
+function bindWidgetMove(card){
+  card.onpointerdown = e => {
+    if(!editMode || e.target.closest('button,.resize-handle') || e.button===2) return;
+    if(widgetDragState) return;
+    const state = {
+      card, pointerId:e.pointerId, startX:e.clientX, startY:e.clientY,
+      sourceGrid:card.closest('.grid'), sourcePage:card.closest('.page'),
+      timer:null, started:false, targetTab:null, tabTimer:null,
+      lastX:e.clientX,lastY:e.clientY,lastHover:null
+    };
+    widgetDragState=state;
+    state.timer=setTimeout(()=>{
+      if(widgetDragState!==state) return;
+      state.started=true;
+      document.body.classList.add('widget-dragging');
+      card.classList.add('widget-moving');
+      notify('Widget sélectionné · déplace-le vers une cellule ou un autre onglet');
+    },260);
+    const move=ev=>{
+      if(widgetDragState!==state || ev.pointerId!==state.pointerId) return;
+      state.lastX=ev.clientX;state.lastY=ev.clientY;
+      if(!state.started){
+        if(Math.hypot(ev.clientX-state.startX,ev.clientY-state.startY)>12){
+          clearTimeout(state.timer);finishWidgetMove(state,false);
+        }
+        return;
+      }
+      ev.preventDefault();
+      const under=document.elementFromPoint(ev.clientX,ev.clientY);
+      const tab=under?.closest('.nav button[data-page]');
+      if(tab && tab.dataset.page!==currentPage){
+        if(state.targetTab!==tab){
+          clearTimeout(state.tabTimer);state.targetTab=tab;
+          state.tabTimer=setTimeout(()=>{
+            if(widgetDragState!==state)return;
+            showPage(tab.dataset.page);
+            state.targetTab=tab;
+          },220);
+        }
+      } else {
+        clearTimeout(state.tabTimer);state.targetTab=null;
+      }
+      // Réorganisation façon écran d'accueil : le widget survolé se décale
+      // pour laisser une place au widget que l'on déplace.
+      const hoverCard=under?.closest('.page.active .grid > .card');
+      if(hoverCard && hoverCard!==state.card && hoverCard.closest('.grid')===state.card.closest('.grid')){
+        if(state.lastHover!==hoverCard){
+          const r=hoverCard.getBoundingClientRect();
+          const after=(ev.clientX>r.left+r.width/2);
+          if(moveWidgetBefore(state.card.closest('.grid'),state.card,hoverCard,after)){
+            state.lastHover=hoverCard;
+          }
+        }
+      } else if(!hoverCard) {
+        state.lastHover=null;
+      }
+    };
+    const up=ev=>{
+      if(widgetDragState!==state || ev.pointerId!==state.pointerId)return;
+      clearTimeout(state.timer);clearTimeout(state.tabTimer);
+      if(!state.started){finishWidgetMove(state,false);return;}
+      const under=document.elementFromPoint(ev.clientX,ev.clientY);
+      const targetGrid=under?.closest('.page.active .grid') || document.querySelector('.page.active .grid');
+      if(targetGrid){
+        const targetPage=targetGrid.closest('.page');
+        let placed=true;
+        if(targetPage!==state.sourcePage){
+          state.card.remove();
+          targetGrid.appendChild(state.card);
+          placed=normalizeGridLayout(targetGrid);
+          if(!placed){
+            state.card.remove();
+            state.sourceGrid.appendChild(state.card);
+            normalizeGridLayout(state.sourceGrid);
+          }
+        } else {
+          placed=normalizeGridLayout(targetGrid);
+        }
+        normalizeGridLayout(state.sourceGrid);
+        normalizeGridLayout(targetGrid);
+        decorateCards();
+        saveWorkspace();
+        if(placed)notify(targetPage!==state.sourcePage?'Widget déplacé vers '+(navEl.querySelector(`[data-page="${targetPage.id}"]`)?.textContent||'la nouvelle fenêtre'):'Widgets réorganisés');
+      }
+      finishWidgetMove(state,true);
+    };
+    document.addEventListener('pointermove',move,{passive:false});
+    document.addEventListener('pointerup',up,{once:true});
+    document.addEventListener('pointercancel',up,{once:true});
+    state.cleanup=()=>{
+      document.removeEventListener('pointermove',move);
+      document.removeEventListener('pointerup',up);
+      document.removeEventListener('pointercancel',up);
+    };
+  };
+}
+function finishWidgetMove(state,completed){
+  if(!state)return;
+  clearTimeout(state.timer);clearTimeout(state.tabTimer);
+  state.cleanup?.();
+  state.card.classList.remove('widget-moving');
+  document.body.classList.remove('widget-dragging');
+  if(widgetDragState===state)widgetDragState=null;
+  if(!completed && state.started)notify('Déplacement annulé');
+}
+
+function startWidgetResize(e,card,dir){
+  if(!editMode)return;
+  e.preventDefault();e.stopPropagation();
+  const grid=card.closest('.grid');if(!grid)return;
+  const before={col:card.style.gridColumnStart?parseInt(card.style.gridColumnStart):0,row:card.style.gridRowStart?parseInt(card.style.gridRowStart):0,cols:parseInt(card.dataset.cols)||1,rows:parseInt(card.dataset.rows)||1};
+  const rect=grid.getBoundingClientRect(),cs=getComputedStyle(grid);
+  const gapX=parseFloat(cs.columnGap)||6,gapY=parseFloat(cs.rowGap)||6;
+  const cellW=(rect.width-gapX*3)/4,cellH=(rect.height-gapY)/2;
+  const sx=e.clientX,sy=e.clientY;
+  try{handle.setPointerCapture(e.pointerId)}catch(_){}
+  const move=ev=>{
+    const dx=Math.round((ev.clientX-sx)/(cellW+gapX)),dy=Math.round((ev.clientY-sy)/(cellH+gapY));
+    let col=before.col||1,row=before.row||1,w=before.cols,h=before.rows;
+    const minW=Math.max(1,parseInt(card.dataset.minCols)||1),minH=Math.max(1,parseInt(card.dataset.minRows)||1);
+    if(dir.includes('e'))w+=dx;
+    if(dir.includes('w')){w-=dx;col+=dx;}
+    if(dir.includes('s'))h+=dy;
+    if(dir.includes('n')){h-=dy;row+=dy;}
+    w=Math.max(minW,Math.min(4,w));h=Math.max(minH,Math.min(2,h));
+    col=Math.max(1,Math.min(5-w,col));row=Math.max(1,Math.min(3-h,row));
+    if(!isGridPlacementFree(grid,card,col,row,w,h))return;
+    card.dataset.cols=String(w);card.dataset.rows=String(h);
+    card.style.gridColumn=`${col} / span ${w}`;card.style.gridRow=`${row} / span ${h}`;
+    card.style.setProperty('--widget-cols',w);card.style.setProperty('--widget-rows',h);
+  };
+  const finish=()=>{
+    handle.removeEventListener('pointermove',move);
+    handle.removeEventListener('pointerup',finish);
+    handle.removeEventListener('pointercancel',finish);
+    saveWorkspace();
+  };
+  handle.addEventListener('pointermove',move);
+  handle.addEventListener('pointerup',finish,{once:true});
+  handle.addEventListener('pointercancel',finish,{once:true});
+}
+function isGridPlacementFree(grid,subject,col,row,w,h){
+  const cells=[];
+  for(let y=row;y<row+h;y++)for(let x=col;x<col+w;x++)cells.push(`${x}:${y}`);
+  for(const other of grid.querySelectorAll(':scope > .card')){
+    if(other===subject)continue;
+    const oc=parseInt(other.style.gridColumnStart)||0,orr=parseInt(other.style.gridRowStart)||0;
+    const ow=parseInt(other.dataset.cols)||1,oh=parseInt(other.dataset.rows)||1;
+    if(!oc||!orr)continue;
+    for(let y=orr;y<orr+oh;y++)for(let x=oc;x<oc+ow;x++)if(cells.includes(`${x}:${y}`))return false;
+  }
+  return true;
+}
+function placeCardAtPoint(card,x,y,grid){
+  if(!grid)return false;
+  const cols=Math.max(1,Math.min(4,parseInt(card.dataset.cols)||1));
+  const rows=Math.max(1,Math.min(2,parseInt(card.dataset.rows)||1));
+  const rect=grid.getBoundingClientRect();
+  const cs=getComputedStyle(grid);
+  const gapX=parseFloat(cs.columnGap)||6;
+  const gapY=parseFloat(cs.rowGap)||6;
+  const cellW=(rect.width-gapX*3)/4;
+  const cellH=(rect.height-gapY)/2;
+  const localX=Math.max(0,Math.min(rect.width-1,x-rect.left));
+  const localY=Math.max(0,Math.min(rect.height-1,y-rect.top));
+  const targetCol=Math.max(1,Math.min(5-cols,Math.floor(localX/(cellW+gapX))+1));
+  const targetRow=Math.max(1,Math.min(3-rows,Math.floor(localY/(cellH+gapY))+1));
+
+  // First try the exact cell under the pointer. If occupied, find the nearest free cell.
+  let found=null;
+  if(isGridPlacementFree(grid,card,targetCol,targetRow,cols,rows)){
+    found={col:targetCol,row:targetRow};
+  } else {
+    let best=null;
+    for(let row=1;row<=3-rows;row++){
+      for(let col=1;col<=5-cols;col++){
+        if(!isGridPlacementFree(grid,card,col,row,cols,rows))continue;
+        const distance=Math.abs(col-targetCol)+Math.abs(row-targetRow);
+        if(!best||distance<best.distance)best={col,row,distance};
+      }
+    }
+    if(best)found={col:best.col,row:best.row};
+  }
+  if(!found){
+    notify('Cette zone est occupée. Choisis une autre cellule.');
+    return false;
+  }
+  card.style.gridColumn=`${found.col} / span ${cols}`;
+  card.style.gridRow=`${found.row} / span ${rows}`;
+  card.dataset.cols=String(cols);
+  card.dataset.rows=String(rows);
+  card.style.setProperty('--widget-cols',cols);
+  card.style.setProperty('--widget-rows',rows);
+  return true;
+}
+
+function openWidgetEditor(card){
+  editingCard=card;
+  const title=card.querySelector('.metric-label,.panel-title,strong');
+  const description=card.querySelector('.detail');
+  document.getElementById('weTitle').value=title?.textContent.trim()||'Widget';
+  document.getElementById('weText').value=description?.textContent.trim()||'';
+  document.getElementById('weAccent').value=card.dataset.accent||'default';
+  document.getElementById('weWidth').value=card.dataset.cols|| (card.classList.contains('widget-size-4')?'4':card.classList.contains('widget-size-2')?'2':'1');
+  document.getElementById('weHeight').value=card.dataset.rows||card.style.getPropertyValue('--widget-rows')||'3';
+  document.getElementById('widgetEditor').classList.add('open');
+}
+function closeWidgetEditor(){
+  document.getElementById('widgetEditor').classList.remove('open');
+  editingCard=null;
+}
+function applyWidgetEditor(){
+  if(!editingCard)return;
+  const title=editingCard.querySelector('.metric-label,.panel-title,strong');
+  const description=editingCard.querySelector('.detail');
+  const newTitle=document.getElementById('weTitle').value.trim();
+  const newText=document.getElementById('weText').value.trim();
+  if(title&&newTitle)title.textContent=newTitle;
+  if(description)description.textContent=newText;
+  else if(newText){
+    const d=document.createElement('div');d.className='detail';d.textContent=newText;editingCard.appendChild(d);
+  }
+  editingCard.classList.remove('widget-size-1','widget-size-2','widget-size-4','wide','full');
+  const cols=Math.max(1,Math.min(4,parseInt(document.getElementById('weWidth').value)||2));
+  const rows=Math.max(1,Math.min(2,parseInt(document.getElementById('weHeight').value)||1));
+  editingCard.dataset.cols=cols;editingCard.dataset.rows=rows;editingCard.style.gridColumn=`span ${cols}`;editingCard.style.gridRow=`span ${rows}`;editingCard.style.setProperty('--widget-cols',cols);editingCard.style.setProperty('--widget-rows',rows);
+  const accent=document.getElementById('weAccent').value;
+  editingCard.dataset.accent=accent;
+  const colors={default:'',blue:'#19baff',orange:'#ff873b',green:'#56f0b0',gold:'#ffbd72'};
+  editingCard.style.setProperty('--widget-accent',colors[accent]||'');
+  if(colors[accent])editingCard.style.setProperty('--orange',colors[accent]);
+  else editingCard.style.removeProperty('--orange');
+  saveWorkspace();closeWidgetEditor();notify('Widget mis à jour');
+}
+document.getElementById('widgetEditor').addEventListener('click',e=>{
+  if(e.target.id==='widgetEditor')closeWidgetEditor();
+});
+
+function addPage(){
+  const modal=document.getElementById('pageCreator');
+  modal.classList.add('open');
+  const input=document.getElementById('newPageName');
+  input.value='';
+  setTimeout(()=>input.focus(),50);
+}
+function closePageCreator(){
+  document.getElementById('pageCreator').classList.remove('open');
+}
+function confirmCreatePage(){
+  const input=document.getElementById('newPageName');
+  const name=input.value.trim();
+  if(!name){input.focus();notify('Indique un nom pour la page');return;}
+  const id='custom_'+Date.now();
+  const page=document.createElement('section');
+  page.className='page';page.id=id;
+  page.innerHTML=`<div class="grid"></div>`;
+  main.appendChild(page);
+  const tab=document.createElement('button');
+  tab.dataset.page=id;tab.textContent=name.toUpperCase();
+  navEl.appendChild(tab);
+  closePageCreator();
+  bindNavigation();
+  showPage(id);
+  if(editMode)decorateCards();
+  saveWorkspace();
+  notify('Page créée · ajoute maintenant tes widgets');
+}
+document.getElementById('pageCreator').addEventListener('click',e=>{
+  if(e.target.id==='pageCreator')closePageCreator();
+});
+document.getElementById('newPageName').addEventListener('keydown',e=>{
+  if(e.key==='Enter')confirmCreatePage();
+  if(e.key==='Escape')closePageCreator();
+});
+function renameCurrentPage(){
+  const page=document.getElementById(currentPage);if(!page)return;
+  const h=page.querySelector('h1');
+  const tab=navEl.querySelector(`[data-page="${currentPage}"]`);
+  const value=prompt('Nouveau nom de la page :',h?.textContent||'Page');
+  if(value===null||!value.trim())return;
+  if(h)h.textContent=value.trim();if(tab)tab.textContent=value.trim().toUpperCase();
+  saveWorkspace();
+}
+
+function addWidget(){
+  if(!document.getElementById(currentPage))return;
+  document.getElementById('widgetLibrary').classList.add('open');
+}
+function closeWidgetLibrary(){document.getElementById('widgetLibrary').classList.remove('open');}
+document.getElementById('widgetLibrary').addEventListener('click',e=>{
+  if(e.target.id==='widgetLibrary')closeWidgetLibrary();
+});
+
+/* Catalogue de widgets externes : déposer un module dans /widgets et l'inscrire au manifest. */
+window.ProjectEdgeWidgets=window.ProjectEdgeWidgets||{
+  registry:{},
+  register(definition){
+    if(!definition||!definition.id||typeof definition.render!=='function')return;
+    this.registry[definition.id]=definition;
+  }
+};
+async function loadExternalWidgetCatalog(){
+  try{
+    const response=await fetch('./widgets/manifest.json',{cache:'no-store'});
+    if(!response.ok)return;
+    const manifest=await response.json();
+    for(const item of (manifest.widgets||[])){
+      if(!item.id||!item.script)continue;
+      await new Promise((resolve,reject)=>{
+        const script=document.createElement('script');
+        script.src='./widgets/'+item.script.replace(/^\//,'');
+        script.onload=resolve;script.onerror=()=>reject(new Error('Chargement impossible : '+item.script));
+        document.head.appendChild(script);
+      });
+    }
+    const host=document.querySelector('#widgetLibrary .library-grid');if(!host)return;
+    Object.values(window.ProjectEdgeWidgets.registry).forEach(def=>{
+      if(host.querySelector(`[data-plugin-id="${CSS.escape(def.id)}"]`))return;
+      const button=document.createElement('button');button.className='library-item';button.dataset.pluginId=def.id;
+      button.innerHTML='<span class="lib-ico">✧</span><strong></strong><small></small>';
+      button.querySelector('strong').textContent=def.title||def.id.toUpperCase();
+      button.querySelector('small').textContent=def.description||'Widget externe';
+      button.onclick=()=>createWidget('plugin:'+def.id);host.appendChild(button);
+    });
+  }catch(error){console.info('Catalogue externe non chargé :',error.message);}
+}
+function getGridWithRoom(cols=1,rows=1){
+  let page=document.getElementById(currentPage);
+  let grid=page?.querySelector('.grid');
+  if(grid){
+    normalizeGridLayout(grid);
+    for(let y=1;y<=3-rows;y++)for(let x=1;x<=5-cols;x++)if(isGridPlacementFree(grid,null,x,y,cols,rows))return grid;
+  }
+  const count=pages.filter(p=>p.id.startsWith('auto_window_')).length+1;
+  const id='auto_window_'+Date.now();
+  const section=document.createElement('section');section.className='page';section.id=id;section.innerHTML='<div class="grid"></div>';
+  main.appendChild(section);
+  const tab=document.createElement('button');tab.dataset.page=id;tab.textContent='FENÊTRE '+count;navEl.appendChild(tab);
+  bindNavigation();showPage(id);saveWorkspace();
+  notify('Nouvelle fenêtre créée automatiquement');
+  return section.querySelector('.grid');
+}
+async function createPluginWidget(id){
+  const def=window.ProjectEdgeWidgets.registry[id];
+  if(!def){notify('Module introuvable : vérifie widgets/manifest.json');return;}
+  const cols=Math.max(1,Math.min(4,Number(def.defaultCols)||1));
+  const rows=Math.max(1,Math.min(2,Number(def.defaultRows)||1));
+  const grid=getGridWithRoom(cols,rows);if(!grid)return;
+  const card=document.createElement('article');card.className='card';
+  card.dataset.cols=String(cols);card.dataset.rows=String(rows);
+  card.dataset.minCols=String(Math.max(1,Number(def.minCols)||1));card.dataset.minRows=String(Math.max(1,Number(def.minRows)||1));
+  card.style.setProperty('--widget-cols',cols);card.style.setProperty('--widget-rows',rows);
+  card.style.gridColumn=`span ${cols}`;card.style.gridRow=`span ${rows}`;
+  card.dataset.widgetType='plugin:'+id;
+  try{
+    await def.render(card);
+    grid.appendChild(card);
+    normalizeGridLayout(grid);
+    closeWidgetLibrary();decorateCards();saveWorkspace();
+    notify('Widget ajouté : '+(def.title||id));
+  }catch(error){notify('Erreur dans le module '+id+' : '+error.message);}
+}
+function createWidget(type){
+  if(type.startsWith('plugin:')){createPluginWidget(type.slice(7));return;}
+  const card=document.createElement('article');card.className='card widget-size-1';card.dataset.cols='1';card.dataset.rows='1';card.style.gridColumn='span 1';card.style.gridRow='span 1';card.style.setProperty('--widget-cols','1');card.style.setProperty('--widget-rows','1');
+  const uid='edge_'+type+'_'+Date.now();
+  const grid=getGridWithRoom((type==='note'||type==='logitech')?2:1,1);
+  if(type==='metric'){
+    card.innerHTML='<div class="metric-label">NOUVEL INDICATEUR</div><div class="metric">0<span class="unit"> </span></div><div class="detail">Valeur personnalisable</div>';
+  }else if(type==='gauge'){
+    card.innerHTML=`<div class="metric-label">NOUVELLE JAUGE</div><div class="gauge-wrap"><div class="gauge" id="${uid}" style="--p:45"><div class="gauge-value">45<small>%</small></div></div><div class="gauge-side"><div class="detail">Progression · démonstration</div></div></div>`;
+  }else if(type==='note'){
+    card.className='card widget-size-2';card.dataset.cols='2';card.style.setProperty('--widget-cols','2');
+    card.innerHTML='<h3 class="panel-title">MA NOTE</h3><div class="detail" style="font-size:13px;line-height:1.6;white-space:pre-wrap">Clique sur le crayon pour écrire ton contenu.</div>';
+  }else if(type==='link'){
+    card.innerHTML=`<button class="tile" style="width:100%" onclick="window.open('https://example.com','_blank')"><span class="ico">↗</span><strong>RACCOURCI WEB</strong><small>Ouvrir le site de démonstration</small></button><div class="detail">Lien de démonstration · à personnaliser</div>`;
+  }else if(type==='clock'){
+    card.innerHTML='<div class="metric-label">HORLOGE LOCALE</div><div class="metric live-clock">--:--:--</div><div class="detail">Heure de cet appareil</div>';
+    const clock=card.querySelector('.live-clock');
+    const update=()=>{if(clock.isConnected)clock.textContent=new Date().toLocaleTimeString('fr-FR');};
+    update();setInterval(update,1000);
+  }else if(type==='status'){
+    card.innerHTML='<div class="metric-label">ÉTAT DU SYSTÈME</div><div class="metric" style="font-size:22px;color:var(--green)">OPÉRATIONNEL</div><div class="detail">Statut personnalisable</div>';
+  }else if(type==='logitech'){
+    card.className='card logi-widget widget-size-2';card.dataset.cols='2';card.style.setProperty('--widget-cols','2');
+    card.dataset.widgetType='logitech';
+    card.dataset.bridgeUrl='http://192.168.1.160:8765';
+    card.innerHTML=`
+      <div class="logi-head"><div><div class="metric-label">PÉRIPHÉRIQUES SANS FIL</div><h3 class="panel-title" style="margin:4px 0 0">LOGITECH CONTROL</h3></div><span class="pill logi-status" data-logi-state>EN ATTENTE DU PC</span></div>
+      <div class="logi-devices">
+        <div class="logi-device"><div class="logi-device-top"><span class="logi-icon">⌨</span><div><div class="logi-name">G915 X LIGHTSPEED</div><div class="logi-sub">Clavier · batterie</div></div></div><div class="logi-meter"><div class="logi-value" data-logi-keyboard>—<small>%</small></div><div class="logi-bar"><i data-logi-keyboard-bar></i></div></div></div>
+        <div class="logi-device"><div class="logi-device-top"><span class="logi-icon">⌖</span><div><div class="logi-name">G502 X LIGHTSPEED</div><div class="logi-sub">Souris · batterie</div></div></div><div class="logi-meter"><div class="logi-value" data-logi-mouse>—<small>%</small></div><div class="logi-bar"><i data-logi-mouse-bar></i></div></div></div>
+        <div class="logi-device"><div class="logi-device-top"><span class="logi-icon">◖</span><div><div class="logi-name">PRO X WIRELESS</div><div class="logi-sub">Casque · batterie estimée</div></div></div><div class="logi-meter"><div class="logi-value" data-logi-headset>—<small>%</small></div><div class="logi-bar"><i data-logi-headset-bar></i></div></div></div>
+      </div>
+      <div class="logi-foot" data-logi-note>Bridge local · lecture seule · actualisation automatique.</div>`;
+  }
+  grid.appendChild(card);closeWidgetLibrary();decorateCards();saveWorkspace();if(type==='logitech')initLogitechWidgets();
+  notify('Widget ajouté · ouvre le crayon pour le configurer');
+}
+
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function escapeAttr(s){return escapeHtml(s).replace(/`/g,'');}
+function saveWorkspace(){
+  const data={pages:[],currentPage};
+  document.querySelectorAll('.page').forEach(p=>{
+    const clone=p.cloneNode(true);
+    clone.querySelectorAll('.widget-tools,.drop-slot').forEach(x=>x.remove());
+    clone.querySelectorAll('.card').forEach(c=>{c.draggable=false;c.classList.remove('dragging','drag-over');});
+    data.pages.push({id:p.id,html:clone.innerHTML});
+  });
+  data.tabs=[...navEl.querySelectorAll('button')].map(b=>({id:b.dataset.page,label:b.textContent}));
+  try{localStorage.setItem('projectEdgeWorkspace',JSON.stringify(data));}catch(e){notify('Sauvegarde locale indisponible');}
+}
+function loadWorkspace(){
+  try{
+    const raw=localStorage.getItem('projectEdgeWorkspace');if(!raw)return;
+    const data=JSON.parse(raw);if(!data.pages?.length)return;
+    main.innerHTML='';
+    data.pages.forEach(item=>{const s=document.createElement('section');s.className='page';s.id=item.id;s.innerHTML=item.html;main.appendChild(s);});
+    navEl.innerHTML='';
+    data.tabs.forEach(t=>{const b=document.createElement('button');b.dataset.page=t.id;b.textContent=t.label;navEl.appendChild(b);});
+    currentPage=data.currentPage||data.pages[0].id;
+  }catch(e){console.warn('Workspace non chargé',e);}
+}
+function resetLayout(){
+  if(!confirm('Revenir à la disposition initiale ? Cela effacera les pages et widgets personnalisés enregistrés sur cet appareil.'))return;
+  localStorage.removeItem('projectEdgeWorkspace');location.reload();
+}
+function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});}
+loadWorkspace();
+document.querySelectorAll('.page .grid>.card').forEach((card)=>{
+  if(!card.dataset.cols)card.dataset.cols=card.classList.contains('full')?2:1;
+  if(!card.dataset.rows)card.dataset.rows='1';
+});
+refreshRefs();
+// Bind every navigation tab, including the four tabs present in the original layout.
+function bindNavigation(){
+  refreshRefs();
+  nav.forEach(button=>{
+    button.onclick=()=>showPage(button.dataset.page);
+  });
+}
+bindNavigation();
+showPage(currentPage);
+initLogitechWidgets();
+loadExternalWidgetCatalog();
+tick();
+setInterval(tick,1000);
+document.querySelector('main').addEventListener('touchstart',e=>{window.edgeTouchX=e.changedTouches[0].screenX;window.edgeTouchY=e.changedTouches[0].screenY},{passive:true});
+document.querySelector('main').addEventListener('touchend',e=>{let dx=e.changedTouches[0].screenX-window.edgeTouchX,dy=e.changedTouches[0].screenY-window.edgeTouchY;if(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy)*1.25){let i=pages.findIndex(p=>p.classList.contains('active'));let n=Math.max(0,Math.min(pages.length-1,i+(dx<0?1:-1)));showPage(pages[n].id)}},{passive:true});
+function updateGauge(valueId,gaugeId,value){
+  const gauge=document.getElementById(gaugeId);if(!gauge)return;
+  value=Math.max(0,Math.min(100,Number(value)));
+  const target=document.getElementById(valueId);if(target)target.textContent=value;
+  gauge.style.setProperty('--p',value);
+}
+function applyReadings(cpu,gpu,ramPct,ramGb,cpuTemp,gpuTemp){
+  updateGauge('cpu','cpuGauge',cpu);updateGauge('gpu','gpuGauge',gpu);updateGauge('ramPct','ramGauge',ramPct);
+  const ram=document.getElementById('ram'),ct=document.getElementById('ctemp'),gt=document.getElementById('gtemp');
+  if(ram)ram.textContent=ramGb;if(ct)ct.textContent=cpuTemp;if(gt)gt.textContent=gpuTemp;
+}
+function normalReadings(){
+  applyReadings(Math.round(12+Math.random()*48),Math.round(22+Math.random()*48),Math.round(50+Math.random()*18),(16+Math.random()*5).toFixed(1),42+Math.round(Math.random()*13),47+Math.round(Math.random()*14));
+}
+normalReadings();setInterval(normalReadings,1800);
+
+
+// Logitech bridge integration: data-only, read-only, same-origin not required (CORS enabled by bridge).
+function logiText(el,value){if(el)el.textContent=value;}
+function logiBattery(card,selector,barSelector,battery,estimated=false){
+  const value=card.querySelector(selector),bar=card.querySelector(barSelector);
+  let pct=null;
+  if(battery&&Number.isFinite(Number(battery.percentage)))pct=Number(battery.percentage);
+  else if(battery&&Number.isFinite(Number(battery.percentage_estimate)))pct=Number(battery.percentage_estimate);
+  if(pct!==null){
+    logiText(value,Math.round(pct)+'%');
+    if(bar)bar.style.width=Math.max(0,Math.min(100,pct))+'%';
+    card.dataset['last'+selector.replace(/[^a-z]/gi,'')]=String(Math.round(pct));
+    if(value)value.dataset.valid='1';
+  } else if(value?.dataset.valid!=='1') {
+    logiText(value,'—%');
+  }
+}
+function logiHasMissingBattery(card){
+  return ['[data-logi-keyboard]','[data-logi-mouse]','[data-logi-headset]'].some(sel=>{
+    const el=card.querySelector(sel);
+    return !el || el.dataset.valid!=='1';
+  });
+}
+function scheduleLogiStartupRetry(card){
+  if(!card || !logiHasMissingBattery(card)){
+    if(card){card.dataset.logiRetryIndex='0'; if(card._logiRetryTimer){clearTimeout(card._logiRetryTimer);card._logiRetryTimer=null;}}
+    return;
+  }
+  const delays=[5000,10000,20000];
+  const index=Number(card.dataset.logiRetryIndex||0);
+  if(index>=delays.length || card._logiRetryTimer)return;
+  card.dataset.logiRetryIndex=String(index+1);
+  card._logiRetryTimer=setTimeout(()=>{card._logiRetryTimer=null;refreshLogitechWidget(card,false);},delays[index]);
+}
+async function refreshLogitechWidget(card,manual=false){
+  if(!card||card.dataset.logiBusy==='1')return;
+  const state=card.querySelector('[data-logi-state]');
+  const base=(card.dataset.bridgeUrl||'').trim().replace(/\/$/,'');
+  if(!base){logiText(state,'ADRESSE MANQUANTE');return;}
+  card.dataset.logiBusy='1';
+  try{
+    const response=await fetch(base+'/api/diagnostic',{cache:'no-store',signal:AbortSignal.timeout(4500)});
+    if(!response.ok)throw new Error('HTTP '+response.status);
+    const d=await response.json();
+    if(!d.ok)throw new Error(d.error||'Diagnostic incomplet');
+    const devices=d.devices||[];
+    const keyboard=devices.find(x=>x.device_index===1||x.receiver_device_index===1)||devices[0];
+    const mouse=devices.find(x=>x.device_index===2||x.receiver_device_index===2)||devices[1];
+    const headset=(d.headset_usb_interfaces||[]).find(x=>x.device==='PRO X Wireless');
+    const hb=headset?.battery_diagnostic?.battery;
+    if(keyboard?.battery && (keyboard.battery.read || keyboard.battery.status_read || keyboard.battery.percentage!==undefined))
+      logiBattery(card,'[data-logi-keyboard]','[data-logi-keyboard-bar]',keyboard.battery);
+    if(mouse?.battery && (mouse.battery.read || mouse.battery.status_read || mouse.battery.percentage!==undefined))
+      logiBattery(card,'[data-logi-mouse]','[data-logi-mouse-bar]',mouse.battery);
+    if(hb && hb.read) logiBattery(card,'[data-logi-headset]','[data-logi-headset-bar]',hb,true);
+    logiText(state,'● CONNECTÉ · V2.9.2');
+    state.style.color='var(--green)';
+    const globalStatus=document.getElementById('connectionStatus');if(globalStatus){globalStatus.classList.remove('disconnected');globalStatus.textContent='●';globalStatus.title='PC connecté';}
+    const headsetNote=card.querySelector('[data-logi-headset]')?.parentElement?.querySelector('.logi-sub');
+    if(headsetNote)headsetNote.textContent=hb?.percentage_is_estimate?'Casque · estimation batterie':'Casque · batterie';
+    logiText(card.querySelector('[data-logi-note]'),'Bridge Logitech V2.9.2 · lecture seule · dernière lecture '+new Date().toLocaleTimeString('fr-FR')+'. '+(d.warning||'')+' '+(headset?.battery_diagnostic?.connected?'Casque connecté.':'Casque non détecté.'));
+    card.dataset.bridgeUrl=base;
+  }catch(e){
+    logiText(state,'○ PC INJOIGNABLE');state.style.color='var(--gold)';
+    const globalStatus=document.getElementById('connectionStatus');if(globalStatus){globalStatus.classList.add('disconnected');globalStatus.textContent='●';globalStatus.title='PC non connecté';}
+    logiText(card.querySelector('[data-logi-note]'),'Connexion impossible : '+e.message+'. Vérifie que le bridge tourne sur le PC et que l’adresse IP est correcte.');
+  }finally{card.dataset.logiBusy='0';scheduleLogiStartupRetry(card);}
+}
+function initLogitechWidgets(){
+  document.querySelectorAll('.logi-widget').forEach(card=>{
+    // Adresse LAN du PC : accessible depuis le navigateur PC et les appareils du réseau.
+    if(!card.dataset.bridgeUrl)card.dataset.bridgeUrl='http://192.168.1.160:8765';
+    refreshLogitechWidget(card,false);
+  });
+}
+// Batteries : lecture immédiate, puis tentatives rapprochées si une valeur manque (5 s, 10 s, 20 s). Ensuite, actualisation normale toutes les 2 minutes.
+setInterval(()=>document.querySelectorAll('.logi-widget').forEach(card=>refreshLogitechWidget(card,false)),120000);
+
+</script>
+</body>
+</html>
